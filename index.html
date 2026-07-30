@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Check your IP before logging into LinkedIn">
+
+    <title>SafeIP</title>
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="container">
+
+        <div class="header__brand">
+
+            <span class="header__logo">🛡</span>
+
+            <div>
+
+                <h1>SafeIP</h1>
+
+                <p>
+                    Protect your LinkedIn account before enter
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+<main class="container">
+
+    <!-- ================= COUNTRY ================= -->
+
+    <article class="card">
+
+        <h2 class="card__title">
+
+            Selected Country
+
+        </h2>
+
+        <label for="countrySelect">
+
+            Country
+
+        </label>
+
+        <select
+                id="countrySelect"
+                aria-label="Country">
+
+        </select>
+
+    </article>
+
+    <!-- ================= NETWORK ================= -->
+
+    <article class="card">
+
+        <h2 class="card__title">
+
+            Current Network
+
+        </h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span>IP Address</span>
+
+                <strong id="ipAddress">
+
+                    Loading...
+
+                </strong>
+
+            </div>
+
+            <div class="info-item">
+
+                <span>Country</span>
+
+                <strong id="countryName">
+
+                    Loading...
+
+                </strong>
+
+            </div>
+
+            <div class="info-item">
+
+                <span>Country Code</span>
+
+                <strong id="countryCode">
+
+                    --
+
+                </strong>
+
+            </div>
+
+            <div class="info-item">
+
+                <span>Region</span>
+
+                <strong id="regionName">
+
+                    Loading...
+
+                </strong>
+
+            </div>
+
+            <div class="info-item">
+
+                <span>City</span>
+
+                <strong id="cityName">
+
+                    Loading...
+
+                </strong>
+
+            </div>
+
+            <div class="info-item">
+
+                <span>Timezone</span>
+
+                <strong id="timezone">
+
+                    Loading...
+
+                </strong>
+
+            </div>
+
+            <div class="info-item">
+
+                <span>ISP</span>
+
+                <strong id="ispName">
+
+                    Loading...
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    </article>
+
+    <!-- ================= STATUS ================= -->
+
+    <article
+            id="statusCard"
+            class="card status-card"
+            role="status"
+            aria-live="polite">
+
+        <h2 class="card__title">
+
+            Security Status
+
+        </h2>
+
+        <div class="status">
+
+            <div id="statusIcon"
+                 class="status__icon">
+
+                🟡
+
+            </div>
+
+            <div>
+
+                <h3 id="statusTitle">
+
+                    Checking...
+
+                </h3>
+
+                <p id="statusMessage">
+
+                    Checking your current network...
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </article>
+
+    <!-- ================= CHECKLIST ================= -->
+
+    <article class="card">
+
+        <h2 class="card__title">
+
+            Security Checklist
+
+        </h2>
+
+        <ul class="checklist">
+
+            <li id="checkCountry">
+
+                ⏳ Country Match
+
+            </li>
+
+            <li id="checkConnection">
+
+                ⏳ Internet Connection
+
+            </li>
+
+            <li id="checkApi">
+
+                ⏳ API Response
+
+            </li>
+
+            <li id="checkLogin">
+
+                ⏳ Safe Login
+
+            </li>
+
+        </ul>
+
+    </article>
+
+    <!-- ================= LAST CHECK ================= -->
+
+    <article class="card">
+
+        <h2 class="card__title">
+
+            Last Check
+
+        </h2>
+
+        <p id="lastChecked">
+
+            Never
+
+        </p>
+
+    </article>
+
+    <!-- ================= ALERT ================= -->
+
+    <div
+            id="alertBox"
+            class="alert hidden"
+            role="alert">
+
+    </div>
+
+    <!-- ================= LOADER ================= -->
+
+    <div
+            id="loader"
+            class="loader hidden">
+
+    </div>
+
+    <!-- ================= ACTIONS ================= -->
+
+    <section class="actions">
+
+        <button
+                id="refreshButton"
+                class="btn btn-primary"
+                type="button">
+
+            Refresh
+
+        </button>
+
+        <button
+                id="copyButton"
+                class="btn btn-secondary"
+                type="button">
+
+            Copy IP
+
+        </button>
+
+        <a
+                id="linkedinButton"
+                class="btn btn-success disabled"
+                href="https://www.linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-disabled="true"
+                tabindex="-1">
+
+            Open LinkedIn
+
+        </a>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+
+    <div class="container">
+
+        <small>
+            SafeIP v1.0.0 · Developed by
+            <a 
+              href="https://www.linkedin.com/in/ahmad-jeddizahed"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Ahmad JeddiZahed
+            </a>
+        </small>
+
+    </div>
+
+</footer>
+
+<script type="module"
+        src="js/app.js"></script>
+
+</body>
+
+</html>
