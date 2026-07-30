@@ -3,9 +3,9 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/AhmadJeddi/SafeIP)
+[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/AhmadJeddi/SafeIP/releases/tag/v1.0.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/Live-Demo-22c55e?style=flat-square&logo=githubpages&logoColor=white)](https://ahmadjeddi.github.io/SafeIP/)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-22c55e?style=flat-square&logo=logoColor=white)](https://ahmadjeddi.github.io/SafeIP/)
 
 > A lightweight network security checker that verifies your current IP location before accessing sensitive online services.
 
