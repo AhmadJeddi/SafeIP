@@ -5,12 +5,11 @@
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
 [![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/AhmadJeddi/SafeIP)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-22c55e?style=flat-square&logo=githubpages&logoColor=white)](https://ahmadjeddi.github.io/SafeIP/)
 
-> A lightweight network security checker that helps users verify their current IP location before accessing sensitive accounts.
+> A lightweight network security checker that verifies your current IP location before accessing sensitive online services.
 
-SafeIP is a simple web-based security tool designed to check whether the current network location matches the user's selected country before opening services such as LinkedIn.
-
-The main goal of this project is to provide a quick security check against unexpected IP location changes.
+SafeIP is a lightweight web application that compares your detected IP location with a user-selected country, helping you identify unexpected network location changes before accessing sensitive online services.
 
 ---
 
@@ -53,7 +52,11 @@ Security status is displayed
 
 ## 🖥️ Preview
 
-SafeIP provides three main security states:
+The demo below showcases the three possible network states:
+
+<p align="center">
+  <img src="assets/preview.gif" alt="SafeIP Demo" width="80%">
+</p>
 
 ### 🟢 Safe Network
 
@@ -103,8 +106,11 @@ Unsafe Network
 
 ```
 SafeIP/
-
 ├── index.html                 # Main application page
+│
+├── assets/
+│   ├── logo.svg               # Application logo
+│   └── preview.gif            # Project demo animation
 │
 ├── css/
 │   ├── reset.css              # Browser style normalization
@@ -132,6 +138,7 @@ SafeIP/
 * HTML5
 * CSS3
 * Vanilla JavaScript (ES Modules)
+* Fetch API
 * LocalStorage API
 * Public IP Geolocation APIs
 
@@ -157,23 +164,10 @@ Clone the repository:
 
 ```bash
 git clone https://github.com/AhmadJeddi/SafeIP.git
-```
-
-Open the project folder:
-
-```bash
 cd SafeIP
 ```
 
-Run the project using a local server.
-
-Example:
-
-Using VS Code Live Server extension:
-
-```
-Open index.html → Run with Live Server
-```
+Run the project using any local web server (e.g. VS Code Live Server).
 
 ---
 
@@ -207,7 +201,17 @@ Planned features:
 
 ## 👨‍💻 Author
 
-**Ahmad JeddiZahed**
+[**Ahmad JeddiZahed**](https://github.com/AhmadJeddi)
+
+---
+
+## ⭐ Contributing
+
+Contributions are welcome!
+
+If you have ideas, find a bug, or want to improve the project, feel free to open an issue or submit a pull request.
+
+If you find this project useful, consider giving it a ⭐ on GitHub.
 
 ---
 

@@ -4,6 +4,10 @@ SafeIP/
 │
 ├── index.html # Main application page
 │
+├── assets/
+│   ├── logo.svg               # Application logo
+│   └── preview.gif            # Project demo animation
+│ 
 ├── css/
 │   ├── reset.css # CSS reset and browser normalization
 │   ├── variables.css # Global CSS variables
