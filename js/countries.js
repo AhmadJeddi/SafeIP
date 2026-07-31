@@ -143,11 +143,7 @@ export const countries = [
 ========================================================== */
 
 countries.sort((a, b) => {
-
-  return a.name.localeCompare(
-    b.name
-  );
-
+  return a.name.localeCompare(b.name);
 });
 
 /* ==========================================================
@@ -161,18 +157,13 @@ countries.sort((a, b) => {
  * @returns {object|null}
  */
 export function getCountryByCode(code) {
-
   if (!code) {
-
     return null;
-
   }
 
-  return countries.find(
-    (country) =>
-      country.code === code.toUpperCase()
-  ) || null;
-
+  return (
+    countries.find((country) => country.code === code.toUpperCase()) || null
+  );
 }
 
 /* ==========================================================
@@ -180,9 +171,7 @@ export function getCountryByCode(code) {
 ========================================================== */
 
 function escapeHTML(value) {
-
   return String(value)
-
     .replaceAll("&", "&amp;")
 
     .replaceAll("<", "&lt;")
@@ -192,7 +181,6 @@ function escapeHTML(value) {
     .replaceAll('"', "&quot;")
 
     .replaceAll("'", "&#039;");
-
 }
 
 /* ==========================================================
@@ -205,11 +193,9 @@ function escapeHTML(value) {
  * @returns {string}
  */
 export function createCountryOptions() {
-
   return countries
 
     .map((country) => {
-
       return `
 
 <option value="${escapeHTML(country.code)}">
@@ -220,9 +206,7 @@ ${escapeHTML(country.name)}
 </option>
 
 `;
-
     })
 
     .join("");
-
 }

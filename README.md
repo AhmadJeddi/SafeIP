@@ -3,7 +3,7 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://github.com/AhmadJeddi/SafeIP/releases/tag/v1.0.0)
+[![Version](https://img.shields.io/badge/Version-1.1.0-blue.svg)](https://github.com/AhmadJeddi/SafeIP/releases/tag/v1.1.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Live-Demo-22c55e?style=flat-square&logo=logoColor=white)](https://ahmadjeddi.github.io/SafeIP/)
 
@@ -15,16 +15,43 @@ SafeIP is a lightweight web application that compares your detected IP location 
 
 ## ✨ Features
 
-* 🌍 Detect current IP address
-* 📍 Detect network country and location information
-* 🏳️ Select expected country manually
-* 🔍 Compare detected country with selected country
-* ✅ Show network safety status
-* 🔒 Prevent login when the network does not match expectations
-* 📋 Copy current IP address
-* 🔄 Refresh network information
-* 💾 Save user preferences using LocalStorage
-* 📱 Responsive design
+- 🌍 Detect current IP address
+- 📍 Detect network country and location information
+- 🏳️ Select expected country manually
+- 🔍 Compare detected country with selected country
+- ✅ Show network safety status
+- 🔒 Prevent login when the network does not match expectations
+- 📋 Copy current IP address
+- 🔄 Refresh network information
+- 💾 Save user preferences using LocalStorage
+- 📱 Responsive design
+
+---
+
+## 🔐 Network Security Validation
+
+SafeIP performs multiple security checks:
+
+- ✅ Internet availability check
+- ✅ API response validation
+- ✅ Country location verification
+- ✅ Protected link access control
+
+---
+
+## 🔗 Quick Links
+
+SafeIP includes a protected quick link manager.
+
+Features:
+
+- Create custom links
+- Assign custom colors
+- Save links locally
+- Delete links
+- Drag & drop ordering
+- Disable links when network is unsafe
+- Enable links after successful validation
 
 ---
 
@@ -55,7 +82,7 @@ Security status is displayed
 The demo below showcases the three possible network states:
 
 <p align="center">
-  <img src="assets/preview.gif" alt="SafeIP Demo" width="80%">
+  <img src="assets/preview.gif" alt="SafeIP Demo" width="90%">
 </p>
 
 ### 🟢 Safe Network
@@ -106,25 +133,26 @@ Unsafe Network
 
 ```
 SafeIP/
-├── index.html                 # Main application page
+├── index.html                   # Main application page
 │
 ├── assets/
-│   ├── logo.svg               # Application logo
-│   └── preview.gif            # Project demo animation
+│   ├── logo.svg                 # Application logo
+│   └── preview.gif              # Project demo animation
 │
 ├── css/
-│   ├── reset.css              # Browser style normalization
-│   ├── variables.css          # Global design variables
-│   └── style.css              # Application styling
+│   ├── reset.css                # Browser style normalization
+│   ├── variables.css            # Global design variables
+│   └── style.css                # Application styling
 │
 ├── js/
-│   ├── app.js                 # Application entry point
-│   ├── api.js                 # Network information service
-│   ├── storage.js             # LocalStorage management
-│   ├── ui.js                  # User interface controller
-│   ├── validator.js           # Security validation logic
-│   ├── countries.js           # Country database
-│   └── config.js              # Application configuration
+│   ├── app.js                   # Application entry point
+│   ├── api.js                   # Network information service
+│   ├── storage.js               # LocalStorage management
+│   ├── ui.js                    # User interface controller
+│   ├── validator.js             # Security validation logic
+│   ├── countries.js             # Country database
+│   ├── quick-links-validator.js # Quick links validation
+│   └── config.js                # Application configuration
 │
 ├── README.md
 ├── project_structure.md
@@ -135,12 +163,12 @@ SafeIP/
 
 ## ⚙️ Technologies Used
 
-* HTML5
-* CSS3
-* Vanilla JavaScript (ES Modules)
-* Fetch API
-* LocalStorage API
-* Public IP Geolocation APIs
+- HTML5
+- CSS3
+- Vanilla JavaScript (ES Modules)
+- Fetch API
+- LocalStorage API
+- Public IP Geolocation APIs
 
 ---
 
@@ -150,9 +178,9 @@ SafeIP uses multiple IP services with fallback support.
 
 Current providers:
 
-* GeoJS (Primary)
-* IPWho (Fallback)
-* IPify (Last fallback)
+- GeoJS (Primary)
+- IPWho (Fallback)
+- IPify (Last fallback)
 
 If one service fails, the application automatically tries another available service.
 
@@ -171,14 +199,14 @@ Run the project using any local web server (e.g. VS Code Live Server).
 
 ---
 
-## 🔐 Security Notes
+## 🔒 Privacy & Security
 
 SafeIP itself does **not**:
 
-* Store your IP address
-* Collect personal information
-* Require account registration
-* Use cookies
+- Store your IP address
+- Collect personal information
+- Require account registration
+- Use cookies
 
 Network information is retrieved directly from public IP geolocation services.
 User preferences are stored locally in your browser using LocalStorage.
@@ -189,13 +217,32 @@ User preferences are stored locally in your browser using LocalStorage.
 
 Planned features:
 
-* Better API reliability system
-* Network history tracking
-* VPN / Proxy detection
-* Browser extension version
-* More detailed security scoring
-* Improved UI animations
-* Dark / Light theme support
+### Security
+
+- VPN / Proxy detection
+- WebRTC leak detection
+- ASN analysis
+- IP reputation checking
+- Risk scoring improvements
+
+### User Experience
+
+- Dark / Light theme
+- Better animations
+- Notification system
+- Internationalization
+
+### Data & History
+
+- Network history timeline
+- Previous IP comparison
+- Security reports
+
+### Platform Expansion
+
+- Browser extension version
+- Desktop application
+- Advanced firewall integration
 
 ---
 

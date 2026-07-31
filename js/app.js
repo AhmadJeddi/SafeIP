@@ -3,7 +3,7 @@
 SafeIP
 app.js
 Application Entry Point
-Version: 1.1.0
+Version: 1.2.0
 ==========================================================
 */
 
@@ -12,6 +12,8 @@ import { createCountryOptions } from "./countries.js";
 import { getNetworkInfo } from "./api.js";
 
 import { validateNetwork } from "./validator.js";
+
+import { validateQuickLink, isDuplicateURL } from "./quick-links-validator.js";
 
 import {
   initializeUI,
@@ -27,16 +29,29 @@ import {
   onRefresh,
   onCountryChange,
   onCopyIP,
-  onLinkedIn,
   copyIPAddress,
+  openLinkModal,
+  closeLinkModal,
+  clearLinkForm,
+  getLinkFormData,
+  renderQuickLinks,
+  onAddLink,
+  onSaveLink,
+  onCancelLink,
+  onDeleteLink,
+  onReorderLinks,
 } from "./ui.js";
 
 import {
   saveSelectedCountry,
   getSelectedCountry as loadSelectedCountry,
+  getQuickLinks,
+  addQuickLink,
+  removeQuickLink,
+  updateQuickLinks,
 } from "./storage.js";
 
-import { APP, LINKS } from "./config.js";
+import { APP } from "./config.js";
 
 /* ==========================================================
    Application State
@@ -48,6 +63,8 @@ const state = {
   validation: null,
 
   selectedCountry: APP.DEFAULT_COUNTRY,
+
+  quickLinks: [],
 };
 
 /* ==========================================================
@@ -84,6 +101,100 @@ function saveCountry() {
   state.selectedCountry = getSelectedCountry();
 
   saveSelectedCountry(state.selectedCountry);
+}
+
+/* ==========================================================
+   Quick Links
+========================================================== */
+
+function loadQuickLinks() {
+  state.quickLinks = getQuickLinks();
+
+  renderQuickLinks(state.quickLinks);
+}
+
+/* ==========================================================
+   Add Link
+========================================================== */
+
+function handleAddLink() {
+  clearLinkForm();
+
+  openLinkModal();
+}
+
+/* ==========================================================
+   Save Link
+========================================================== */
+
+function handleSaveLink() {
+  const data = getLinkFormData();
+
+  const validation = validateQuickLink(data);
+
+  if (!validation.valid) {
+    alert(validation.message);
+
+    return;
+  }
+
+  /*
+  Check duplicate URL
+  */
+
+  if (isDuplicateURL(validation.data.url, state.quickLinks)) {
+    alert("This link already exists.");
+
+    return;
+  }
+
+  const link = {
+    id: Date.now(),
+
+    title: validation.data.title,
+
+    url: validation.data.url,
+
+    color: validation.data.color,
+  };
+
+  state.quickLinks = addQuickLink(link);
+
+  renderQuickLinks(state.quickLinks);
+
+  closeLinkModal();
+}
+
+/* ==========================================================
+   Cancel Link
+========================================================== */
+
+function handleCancelLink() {
+  closeLinkModal();
+}
+
+/* ==========================================================
+   Delete Link
+========================================================== */
+
+function handleDeleteLink(id) {
+  state.quickLinks = removeQuickLink(id);
+
+  renderQuickLinks(state.quickLinks);
+}
+
+/* ==========================================================
+   Reorder Quick Links
+========================================================== */
+
+function handleReorderLinks(event) {
+  const ids = event.detail;
+
+  state.quickLinks.sort(
+    (a, b) => ids.indexOf(String(a.id)) - ids.indexOf(String(b.id)),
+  );
+
+  updateQuickLinks(state.quickLinks);
 }
 
 /* ==========================================================
@@ -147,24 +258,6 @@ async function handleCopyIP() {
 }
 
 /* ==========================================================
-   LinkedIn
-========================================================== */
-
-function handleLinkedIn() {
-  if (!state.validation || !state.validation.safe) {
-    return;
-  }
-
-  window.open(
-    LINKS.LINKEDIN,
-
-    "_blank",
-
-    "noopener,noreferrer",
-  );
-}
-
-/* ==========================================================
    Events
 ========================================================== */
 
@@ -175,7 +268,15 @@ function bindEvents() {
 
   onCopyIP(handleCopyIP);
 
-  onLinkedIn(handleLinkedIn);
+  onAddLink(handleAddLink);
+
+  onSaveLink(handleSaveLink);
+
+  onCancelLink(handleCancelLink);
+
+  onDeleteLink(handleDeleteLink);
+
+  onReorderLinks(handleReorderLinks);
 }
 
 /* ==========================================================
@@ -188,6 +289,8 @@ async function initialize() {
   loadCountries();
 
   restoreCountry();
+
+  loadQuickLinks();
 
   await refreshNetwork();
 }

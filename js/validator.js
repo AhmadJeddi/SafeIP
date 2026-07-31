@@ -183,7 +183,7 @@ export function validateNetwork(selectedCountry, networkData) {
     title: "Safe Network",
 
     message:
-      "Your current IP matches the selected country. It is safe to open LinkedIn.",
+      "Your network passed the SafeIP verification. The detected IP location matches your selected country.",
 
     checks: {
       internet: true,

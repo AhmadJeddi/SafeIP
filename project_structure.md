@@ -1,4 +1,5 @@
 # SafeIP Project Structure
+
 ```text
 SafeIP/
 │
@@ -7,7 +8,7 @@ SafeIP/
 ├── assets/
 │   ├── logo.svg               # Application logo
 │   └── preview.gif            # Project demo animation
-│ 
+│
 ├── css/
 │   ├── reset.css # CSS reset and browser normalization
 │   ├── variables.css # Global CSS variables
@@ -20,6 +21,7 @@ SafeIP/
 │   ├── ui.js # User interface rendering and interactions
 │   ├── validator.js # Network security validation logic
 │   ├── countries.js # Country data and selector generation
+│   ├── quick-links-validator.js # Quick links validation
 │   └── config.js # Application configuration settings
 │
 ├── README.md # Project documentation

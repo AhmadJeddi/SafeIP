@@ -1,355 +1,232 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <meta name="description"
-          content="Check your IP before logging into LinkedIn">
+    <meta
+      name="description"
+      content="SafeIP helps you verify your network location before accessing sensitive accounts"
+    />
 
     <title>SafeIP</title>
 
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link
+      type="image/png"
+      sizes="96x96"
+      rel="icon"
+      href="https://img.icons8.com/pulsar-gradient/96/shield.png"
+    />
 
-</head>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
 
-<body>
-
-<header class="header">
-
-    <div class="container">
-
+  <body>
+    <header class="header">
+      <div class="container">
         <div class="header__brand">
+          <span class="header__logo">🛡</span>
 
-            <span class="header__logo">🛡</span>
+          <div>
+            <h1>SafeIP</h1>
 
-            <div>
-
-                <h1>SafeIP</h1>
-
-                <p>
-                    Protect your LinkedIn account before enter
-                </p>
-
-            </div>
-
+            <p>
+              Verify your network location before accessing sensitive accounts
+            </p>
+          </div>
         </div>
+      </div>
+    </header>
 
-    </div>
+    <main class="container">
+      <!-- ================= COUNTRY ================= -->
 
-</header>
+      <article class="card">
+        <h2 class="card__title">Selected Country</h2>
 
-<main class="container">
+        <label for="countrySelect"> Country </label>
 
-    <!-- ================= COUNTRY ================= -->
+        <select id="countrySelect" aria-label="Country"></select>
+      </article>
 
-    <article class="card">
+      <!-- ================= NETWORK ================= -->
 
-        <h2 class="card__title">
-
-            Selected Country
-
-        </h2>
-
-        <label for="countrySelect">
-
-            Country
-
-        </label>
-
-        <select
-                id="countrySelect"
-                aria-label="Country">
-
-        </select>
-
-    </article>
-
-    <!-- ================= NETWORK ================= -->
-
-    <article class="card">
-
-        <h2 class="card__title">
-
-            Current Network
-
-        </h2>
+      <article class="card">
+        <h2 class="card__title">Current Network</h2>
 
         <div class="info-grid">
+          <div class="info-item">
+            <span>IP Address</span>
 
-            <div class="info-item">
+            <strong id="ipAddress"> Loading... </strong>
+          </div>
 
-                <span>IP Address</span>
+          <div class="info-item">
+            <span>Country</span>
 
-                <strong id="ipAddress">
+            <strong id="countryName"> Loading... </strong>
+          </div>
 
-                    Loading...
+          <div class="info-item">
+            <span>Country Code</span>
 
-                </strong>
+            <strong id="countryCode"> -- </strong>
+          </div>
 
-            </div>
+          <div class="info-item">
+            <span>Region</span>
 
-            <div class="info-item">
+            <strong id="regionName"> Loading... </strong>
+          </div>
 
-                <span>Country</span>
+          <div class="info-item">
+            <span>City</span>
 
-                <strong id="countryName">
+            <strong id="cityName"> Loading... </strong>
+          </div>
 
-                    Loading...
+          <div class="info-item">
+            <span>Timezone</span>
 
-                </strong>
+            <strong id="timezone"> Loading... </strong>
+          </div>
 
-            </div>
+          <div class="info-item">
+            <span>ISP</span>
 
-            <div class="info-item">
-
-                <span>Country Code</span>
-
-                <strong id="countryCode">
-
-                    --
-
-                </strong>
-
-            </div>
-
-            <div class="info-item">
-
-                <span>Region</span>
-
-                <strong id="regionName">
-
-                    Loading...
-
-                </strong>
-
-            </div>
-
-            <div class="info-item">
-
-                <span>City</span>
-
-                <strong id="cityName">
-
-                    Loading...
-
-                </strong>
-
-            </div>
-
-            <div class="info-item">
-
-                <span>Timezone</span>
-
-                <strong id="timezone">
-
-                    Loading...
-
-                </strong>
-
-            </div>
-
-            <div class="info-item">
-
-                <span>ISP</span>
-
-                <strong id="ispName">
-
-                    Loading...
-
-                </strong>
-
-            </div>
-
+            <strong id="ispName"> Loading... </strong>
+          </div>
         </div>
+      </article>
 
-    </article>
+      <!-- ================= STATUS ================= -->
 
-    <!-- ================= STATUS ================= -->
-
-    <article
-            id="statusCard"
-            class="card status-card"
-            role="status"
-            aria-live="polite">
-
-        <h2 class="card__title">
-
-            Security Status
-
-        </h2>
+      <article
+        id="statusCard"
+        class="card status-card"
+        role="status"
+        aria-live="polite"
+      >
+        <h2 class="card__title">Security Status</h2>
 
         <div class="status">
+          <div id="statusIcon" class="status__icon">🟡</div>
 
-            <div id="statusIcon"
-                 class="status__icon">
+          <div>
+            <h3 id="statusTitle">Checking...</h3>
 
-                🟡
-
-            </div>
-
-            <div>
-
-                <h3 id="statusTitle">
-
-                    Checking...
-
-                </h3>
-
-                <p id="statusMessage">
-
-                    Checking your current network...
-
-                </p>
-
-            </div>
-
+            <p id="statusMessage">Checking your current network...</p>
+          </div>
         </div>
+      </article>
 
-    </article>
+      <!-- ================= CHECKLIST ================= -->
 
-    <!-- ================= CHECKLIST ================= -->
-
-    <article class="card">
-
-        <h2 class="card__title">
-
-            Security Checklist
-
-        </h2>
+      <article class="card">
+        <h2 class="card__title">Security Checklist</h2>
 
         <ul class="checklist">
+          <li id="checkCountry">⏳ Country Match</li>
 
-            <li id="checkCountry">
+          <li id="checkConnection">⏳ Internet Connection</li>
 
-                ⏳ Country Match
+          <li id="checkApi">⏳ API Response</li>
 
-            </li>
-
-            <li id="checkConnection">
-
-                ⏳ Internet Connection
-
-            </li>
-
-            <li id="checkApi">
-
-                ⏳ API Response
-
-            </li>
-
-            <li id="checkLogin">
-
-                ⏳ Safe Login
-
-            </li>
-
+          <li id="checkLogin">⏳ Safe Login</li>
         </ul>
+      </article>
 
-    </article>
+      <!-- ================= LAST CHECK ================= -->
 
-    <!-- ================= LAST CHECK ================= -->
+      <article class="card">
+        <h2 class="card__title">Last Check</h2>
 
-    <article class="card">
+        <p id="lastChecked">Never</p>
+      </article>
 
-        <h2 class="card__title">
+      <!-- ================= ALERT ================= -->
 
-            Last Check
+      <div id="alertBox" class="alert hidden" role="alert"></div>
 
-        </h2>
+      <!-- ================= LOADER ================= -->
 
-        <p id="lastChecked">
+      <div id="loader" class="loader hidden"></div>
 
-            Never
+      <!-- ================= ACTIONS ================= -->
 
-        </p>
-
-    </article>
-
-    <!-- ================= ALERT ================= -->
-
-    <div
-            id="alertBox"
-            class="alert hidden"
-            role="alert">
-
-    </div>
-
-    <!-- ================= LOADER ================= -->
-
-    <div
-            id="loader"
-            class="loader hidden">
-
-    </div>
-
-    <!-- ================= ACTIONS ================= -->
-
-    <section class="actions">
-
-        <button
-                id="refreshButton"
-                class="btn btn-primary"
-                type="button">
-
-            Refresh
-
+      <section class="actions">
+        <button id="refreshButton" class="btn btn-primary" type="button">
+          Refresh
         </button>
 
-        <button
-                id="copyButton"
-                class="btn btn-secondary"
-                type="button">
-
-            Copy IP
-
+        <button id="copyButton" class="btn btn-secondary" type="button">
+          Copy IP
         </button>
+      </section>
 
-        <a
-                id="linkedinButton"
-                class="btn btn-success disabled"
-                href="https://www.linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-disabled="true"
-                tabindex="-1">
+      <!-- ================= QUICK LINKS ================= -->
 
-            Open LinkedIn
+      <section class="card">
+        <div class="quick-links__header">
+          <h2 class="card__title">Quick Links</h2>
 
-        </a>
+          <button id="addLinkButton" class="btn btn-primary" type="button">
+            + Add Quick Link
+          </button>
+        </div>
 
-    </section>
+        <div id="quickLinksContainer" class="quick-links"></div>
+      </section>
+    </main>
 
-</main>
+    <!-- ================= ADD LINK MODAL ================= -->
 
-<footer class="footer">
+    <div id="linkModal" class="modal hidden">
+      <div class="modal__content">
+        <h2>Add Quick Link</h2>
 
-    <div class="container">
+        <label for="linkTitle"> Title </label>
 
+        <input id="linkTitle" type="text" maxlength="14" placeholder="GitHub" />
+
+        <label for="linkUrl"> URL </label>
+
+        <input id="linkUrl" type="url" placeholder="https://github.com" />
+
+        <label for="linkColor"> Color </label>
+
+        <input id="linkColor" type="color" value="#2563eb" />
+
+        <div class="modal__actions">
+          <button id="saveLinkButton" class="btn btn-success" type="button">
+            Save
+          </button>
+
+          <button id="cancelLinkButton" class="btn btn-secondary" type="button">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
         <small>
-            SafeIP v1.0.0 · Developed by
-            <a 
-              href="https://www.linkedin.com/in/ahmad-jeddizahed"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Ahmad JeddiZahed
-            </a>
+          SafeIP v1.1.0 · Developed by
+          <a
+            href="https://github.com/AhmadJeddi/SafeIP"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ahmad JeddiZahed
+          </a>
         </small>
+      </div>
+    </footer>
 
-    </div>
-
-</footer>
-
-<script type="module"
-        src="js/app.js"></script>
-
-</body>
-
+    <script type="module" src="js/app.js"></script>
+  </body>
 </html>

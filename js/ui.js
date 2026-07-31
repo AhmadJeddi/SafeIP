@@ -3,11 +3,14 @@
 SafeIP
 ui.js
 UI Layer
-Version: 1.1.0
+Version: 1.2.0
 ==========================================================
 */
 
-import { ICONS, UI } from "./config.js";
+import { ICONS, UI, QUICK_LINKS } from "./config.js";
+
+let copyFeedbackTimer = null;
+let quickLinksEnabled = false;
 
 /* ==========================================================
    DOM Cache
@@ -44,15 +47,29 @@ const elements = {
 
   checkApi: document.getElementById("checkApi"),
 
-  checkLinkedin: document.getElementById("checkLogin"),
+  checkLogin: document.getElementById("checkLogin"),
 
   refreshButton: document.getElementById("refreshButton"),
 
   copyButton: document.getElementById("copyButton"),
 
-  linkedinButton: document.getElementById("linkedinButton"),
-
   lastChecked: document.getElementById("lastChecked"),
+
+  quickLinksContainer: document.getElementById("quickLinksContainer"),
+
+  addLinkButton: document.getElementById("addLinkButton"),
+
+  linkModal: document.getElementById("linkModal"),
+
+  linkTitle: document.getElementById("linkTitle"),
+
+  linkUrl: document.getElementById("linkUrl"),
+
+  linkColor: document.getElementById("linkColor"),
+
+  saveLinkButton: document.getElementById("saveLinkButton"),
+
+  cancelLinkButton: document.getElementById("cancelLinkButton"),
 };
 
 /* ==========================================================
@@ -138,13 +155,18 @@ export function showLoading() {
 
   setText(elements.statusTitle, "Checking...");
 
-  setText(elements.statusMessage, UI.LOADING_TEXT);
+  setText(elements.copyButton, "Copy IP");
 
-  disable(elements.linkedinButton);
+  setText(elements.statusMessage, UI.LOADING_TEXT);
 
   disable(elements.copyButton);
 
   disable(elements.refreshButton);
+
+  clearTimeout(copyFeedbackTimer);
+
+  // Lock Quick Links while checking network
+  toggleQuickLinks(false);
 }
 
 export function hideLoading() {
@@ -196,7 +218,8 @@ function setSafeStatus(result) {
 
   setText(elements.statusMessage, result.message);
 
-  enable(elements.linkedinButton);
+  // Enable Quick Links after successful validation
+  toggleQuickLinks(true);
 }
 
 /* ==========================================================
@@ -212,7 +235,8 @@ function setWarningStatus(result) {
 
   setText(elements.statusMessage, result.message);
 
-  disable(elements.linkedinButton);
+  // Disable Quick Links
+  toggleQuickLinks(false);
 }
 
 /* ==========================================================
@@ -220,34 +244,16 @@ function setWarningStatus(result) {
 ========================================================== */
 
 function setDangerStatus(result) {
+  replaceStatusClass("status-danger");
 
-  replaceStatusClass(
-    "status-danger"
-  );
+  setText(elements.statusIcon, ICONS.DANGER);
 
+  setText(elements.statusTitle, result.title);
 
-  setText(
-    elements.statusIcon,
-    ICONS.DANGER
-  );
+  setText(elements.statusMessage, result.message);
 
-
-  setText(
-    elements.statusTitle,
-    result.title
-  );
-
-
-  setText(
-    elements.statusMessage,
-    result.message
-  );
-
-
-  disable(
-    elements.linkedinButton
-  );
-
+  // Disable Quick Links when network is dangerous
+  toggleQuickLinks(false);
 }
 
 /* ==========================================================
@@ -255,74 +261,39 @@ function setDangerStatus(result) {
 ========================================================== */
 
 export function renderChecklist(checks) {
-
   if (!checks) {
     return;
   }
 
-  updateCheckItem(
-    elements.checkCountry,
-    checks.country,
-    "Country Match"
-  );
+  updateCheckItem(elements.checkCountry, checks.country, "Country Match");
 
   updateCheckItem(
     elements.checkInternet,
     checks.internet,
-    "Internet Connection"
+    "Internet Connection",
   );
 
-  updateCheckItem(
-    elements.checkApi,
-    checks.api,
-    "API Status"
-  );
+  updateCheckItem(elements.checkApi, checks.api, "API Status");
 
-  updateCheckItem(
-    elements.checkLinkedin,
-    checks.login,
-    "Safe To Login"
-  );
-
+  updateCheckItem(elements.checkLogin, checks.login, "Safe To Login");
 }
 
-function updateCheckItem(
-  element,
-  passed,
-  label
-) {
-
+function updateCheckItem(element, passed, label) {
   if (!element) {
     return;
   }
 
-  element.classList.remove(
-    "passed",
-    "failed"
-  );
+  element.classList.remove("passed", "failed");
 
   if (passed) {
+    element.textContent = `${ICONS.CHECK} ${label}`;
 
-    element.textContent =
-      `${ICONS.CHECK} ${label}`;
+    element.classList.add("passed");
+  } else {
+    element.textContent = `${ICONS.CROSS} ${label}`;
 
-    element.classList.add(
-      "passed"
-    );
-
+    element.classList.add("failed");
   }
-
-  else {
-
-    element.textContent =
-      `${ICONS.CROSS} ${label}`;
-
-    element.classList.add(
-      "failed"
-    );
-
-  }
-
 }
 
 /* ==========================================================
@@ -330,31 +301,13 @@ function updateCheckItem(
 ========================================================== */
 
 export function resetChecklist() {
+  updateCheckItem(elements.checkCountry, false, "Country Match");
 
-  updateCheckItem(
-    elements.checkCountry,
-    false,
-    "Country Match"
-  );
+  updateCheckItem(elements.checkInternet, false, "Internet Connection");
 
-  updateCheckItem(
-    elements.checkInternet,
-    false,
-    "Internet Connection"
-  );
+  updateCheckItem(elements.checkApi, false, "API Status");
 
-  updateCheckItem(
-    elements.checkApi,
-    false,
-    "API Status"
-  );
-
-  updateCheckItem(
-    elements.checkLinkedin,
-    false,
-    "Safe To Login"
-  );
-
+  updateCheckItem(elements.checkLogin, false, "Safe To Login");
 }
 
 /* ==========================================================
@@ -362,42 +315,19 @@ export function resetChecklist() {
 ========================================================== */
 
 export function resetNetworkInfo() {
+  setText(elements.ipAddress, UI.DEFAULT_IP);
 
-  setText(
-    elements.ipAddress,
-    UI.DEFAULT_IP
-  );
+  setText(elements.countryName, UI.DEFAULT_COUNTRY);
 
-  setText(
-    elements.countryName,
-    UI.DEFAULT_COUNTRY
-  );
+  setText(elements.countryCode, UI.DEFAULT_COUNTRY_CODE);
 
-  setText(
-    elements.countryCode,
-    UI.DEFAULT_COUNTRY_CODE
-  );
+  setText(elements.regionName, UI.DEFAULT_REGION);
 
-  setText(
-    elements.regionName,
-    UI.DEFAULT_REGION
-  );
+  setText(elements.cityName, UI.DEFAULT_CITY);
 
-  setText(
-    elements.cityName,
-    UI.DEFAULT_CITY
-  );
+  setText(elements.ispName, UI.DEFAULT_ISP);
 
-  setText(
-    elements.ispName,
-    UI.DEFAULT_ISP
-  );
-
-  setText(
-    elements.timezone,
-    UI.DEFAULT_TIMEZONE
-  );
-
+  setText(elements.timezone, UI.DEFAULT_TIMEZONE);
 }
 
 /* ==========================================================
@@ -405,30 +335,15 @@ export function resetNetworkInfo() {
 ========================================================== */
 
 export function renderError(message) {
+  replaceStatusClass("status-danger");
 
-  replaceStatusClass(
-    "status-danger"
-  );
+  setText(elements.statusIcon, ICONS.DANGER);
 
-  setText(
-    elements.statusIcon,
-    ICONS.DANGER
-  );
+  setText(elements.statusTitle, "Error");
 
-  setText(
-    elements.statusTitle,
-    "Error"
-  );
+  setText(elements.statusMessage, message || UI.ERROR_TEXT);
 
-  setText(
-    elements.statusMessage,
-    message || UI.ERROR_TEXT
-  );
-
-  disable(
-    elements.linkedinButton
-  );
-
+  toggleQuickLinks(false);
 }
 
 /* ==========================================================
@@ -436,24 +351,15 @@ export function renderError(message) {
 ========================================================== */
 
 export function updateLastChecked() {
-
   const now = new Date();
 
-  const time =
-    now.toLocaleTimeString(
-      [],
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }
-    );
+  const time = now.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
 
-  setText(
-    elements.lastChecked,
-    time
-  );
-
+  setText(elements.lastChecked, time);
 }
 
 /* ==========================================================
@@ -461,21 +367,11 @@ export function updateLastChecked() {
 ========================================================== */
 
 export function startRefreshAnimation() {
-
-  addClass(
-    elements.refreshButton,
-    "loading"
-  );
-
+  addClass(elements.refreshButton, "loading");
 }
 
 export function stopRefreshAnimation() {
-
-  removeClass(
-    elements.refreshButton,
-    "loading"
-  );
-
+  removeClass(elements.refreshButton, "loading");
 }
 
 /* ==========================================================
@@ -483,7 +379,6 @@ export function stopRefreshAnimation() {
 ========================================================== */
 
 export function startLoadingState() {
-
   showLoading();
 
   resetNetworkInfo();
@@ -491,15 +386,12 @@ export function startLoadingState() {
   resetChecklist();
 
   startRefreshAnimation();
-
 }
 
 export function stopLoadingState() {
-
   hideLoading();
 
   stopRefreshAnimation();
-
 }
 
 /* ==========================================================
@@ -507,19 +399,250 @@ export function stopLoadingState() {
 ========================================================== */
 
 export function getSelectedCountry() {
-
   return elements.countrySelect?.value || "IR";
-
 }
 
 export function setSelectedCountry(code) {
-
   if (!elements.countrySelect) {
     return;
   }
 
   elements.countrySelect.value = code;
+}
 
+/* ==========================================================
+   Quick Links Modal
+========================================================== */
+
+export function openLinkModal() {
+  removeClass(elements.linkModal, "hidden");
+
+  elements.linkTitle?.focus();
+}
+
+export function closeLinkModal() {
+  addClass(elements.linkModal, "hidden");
+}
+
+export function clearLinkForm() {
+  elements.linkTitle.value = "";
+
+  elements.linkUrl.value = "";
+
+  const colors = QUICK_LINKS.COLORS;
+
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+  elements.linkColor.value = randomColor;
+}
+
+/* ==========================================================
+   Link Form
+========================================================== */
+
+export function getLinkFormData() {
+  return {
+    title: elements.linkTitle.value.trim(),
+
+    url: elements.linkUrl.value.trim(),
+
+    color: elements.linkColor.value,
+  };
+}
+
+/* ==========================================================
+   Quick Links Access Control
+========================================================== */
+
+/**
+ * Enable or disable Quick Links
+ *
+ * Quick Links are disabled by default
+ * and become available only after
+ * network validation is SAFE.
+ *
+ * @param {boolean} enabled
+ */
+export function toggleQuickLinks(enabled) {
+  quickLinksEnabled = enabled;
+
+  const links = elements.quickLinksContainer?.querySelectorAll(".quick-link");
+
+  if (!links) return;
+
+  links.forEach((link) => {
+    if (enabled) {
+      link.classList.remove("disabled");
+      link.removeAttribute("aria-disabled");
+      link.style.pointerEvents = "auto";
+    } else {
+      link.classList.add("disabled");
+      link.setAttribute("aria-disabled", "true");
+      link.style.pointerEvents = "none";
+    }
+  });
+}
+
+/* ==========================================================
+   Quick Links Renderer
+========================================================== */
+
+export function renderQuickLinks(links) {
+  if (!elements.quickLinksContainer) {
+    return;
+  }
+
+  elements.quickLinksContainer.innerHTML = "";
+
+  links.forEach((link) => {
+    const wrapper = document.createElement("div");
+
+    wrapper.className = "quick-link-wrapper";
+
+    wrapper.draggable = true;
+
+    wrapper.dataset.id = link.id;
+
+    const button = document.createElement("a");
+
+    /*
+    Quick Links are locked until
+    IP validation succeeds.
+    */
+    button.className = "btn quick-link";
+
+    if (!quickLinksEnabled) {
+      button.classList.add("disabled");
+
+      button.setAttribute("aria-disabled", "true");
+    }
+
+    button.href = link.url;
+
+    button.target = "_blank";
+
+    button.rel = "noopener noreferrer";
+
+    button.textContent = link.title;
+
+    button.style.background = link.color;
+
+    const deleteButton = document.createElement("button");
+
+    /* 
+    Drag Events
+    */
+    wrapper.addEventListener("dragstart", handleDragStart);
+
+    wrapper.addEventListener("dragover", handleDragOver);
+
+    wrapper.addEventListener("drop", handleDrop);
+
+    wrapper.addEventListener("dragend", handleDragEnd);
+
+    deleteButton.className = "quick-link-delete";
+
+    deleteButton.type = "button";
+
+    deleteButton.textContent = "×";
+
+    deleteButton.dataset.id = link.id;
+
+    wrapper.appendChild(button);
+
+    wrapper.appendChild(deleteButton);
+
+    elements.quickLinksContainer.appendChild(wrapper);
+  });
+}
+
+/* ==========================================================
+   Quick Links Drag & Drop
+========================================================== */
+
+let draggedElement = null;
+
+/**
+ * Start dragging
+ */
+function handleDragStart(event) {
+  draggedElement = event.currentTarget;
+
+  event.dataTransfer.effectAllowed = "move";
+
+  event.currentTarget.classList.add("dragging");
+}
+
+/**
+ * Allow dropping
+ */
+function handleDragOver(event) {
+  event.preventDefault();
+
+  event.dataTransfer.dropEffect = "move";
+}
+
+/**
+ * Drop element
+ */
+function handleDrop(event) {
+  event.preventDefault();
+
+  const target = event.currentTarget;
+
+  if (!draggedElement || draggedElement === target) {
+    return;
+  }
+
+  const container = elements.quickLinksContainer;
+
+  const items = [...container.children];
+
+  const draggedIndex = items.indexOf(draggedElement);
+
+  const targetIndex = items.indexOf(target);
+
+  if (draggedIndex < targetIndex) {
+    container.insertBefore(draggedElement, target.nextSibling);
+  } else {
+    container.insertBefore(draggedElement, target);
+  }
+
+  updateQuickLinksOrder();
+}
+
+/**
+ * End dragging
+ */
+function handleDragEnd(event) {
+  event.currentTarget.classList.remove("dragging");
+
+  draggedElement = null;
+}
+
+/* ==========================================================
+   Update Quick Links Order
+========================================================== */
+
+/**
+ * Dispatch reordered quick links event
+ *
+ * @returns {void}
+ */
+function updateQuickLinksOrder() {
+  if (!elements.quickLinksContainer) {
+    return;
+  }
+
+  const ids = [...elements.quickLinksContainer.children].map(
+    (item) => item.dataset.id,
+  );
+
+  elements.quickLinksContainer.dispatchEvent(
+    new CustomEvent("quicklinks-reordered", {
+      detail: ids,
+    }),
+  );
 }
 
 /* ==========================================================
@@ -527,38 +650,29 @@ export function setSelectedCountry(code) {
 ========================================================== */
 
 export async function copyIPAddress() {
+  const ip = elements.ipAddress?.textContent.trim();
 
-  const ip =
-    elements.ipAddress?.textContent.trim();
-
-  if (
-    !ip ||
-    ip === UI.DEFAULT_IP
-  ) {
-
+  if (!ip || ip === UI.DEFAULT_IP) {
     return false;
-
   }
 
   try {
-
     await navigator.clipboard.writeText(ip);
 
+    setText(elements.copyButton, "Copied!");
+
+    clearTimeout(copyFeedbackTimer);
+
+    copyFeedbackTimer = setTimeout(() => {
+      setText(elements.copyButton, "Copy IP");
+    }, 2000);
+
     return true;
-
-  }
-
-  catch(error) {
-
-    console.error(
-      "Copy failed:",
-      error
-    );
+  } catch (error) {
+    console.error("Copy failed:", error);
 
     return false;
-
   }
-
 }
 
 /* ==========================================================
@@ -566,39 +680,46 @@ export async function copyIPAddress() {
 ========================================================== */
 
 export function onRefresh(callback) {
-
-  elements.refreshButton?.addEventListener(
-    "click",
-    callback
-  );
-
+  elements.refreshButton?.addEventListener("click", callback);
 }
 
 export function onCountryChange(callback) {
-
-  elements.countrySelect?.addEventListener(
-    "change",
-    callback
-  );
-
+  elements.countrySelect?.addEventListener("change", callback);
 }
 
 export function onCopyIP(callback) {
-
-  elements.copyButton?.addEventListener(
-    "click",
-    callback
-  );
-
+  elements.copyButton?.addEventListener("click", callback);
 }
 
-export function onLinkedIn(callback) {
+export function onAddLink(callback) {
+  elements.addLinkButton?.addEventListener("click", callback);
+}
 
-  elements.linkedinButton?.addEventListener(
-    "click",
-    callback
+export function onSaveLink(callback) {
+  elements.saveLinkButton?.addEventListener("click", callback);
+}
+
+export function onCancelLink(callback) {
+  elements.cancelLinkButton?.addEventListener("click", callback);
+}
+
+export function onDeleteLink(callback) {
+  elements.quickLinksContainer?.addEventListener("click", (event) => {
+    const button = event.target.closest(".quick-link-delete");
+
+    if (!button) {
+      return;
+    }
+
+    callback(button.dataset.id);
+  });
+}
+
+export function onReorderLinks(callback) {
+  elements.quickLinksContainer?.addEventListener(
+    "quicklinks-reordered",
+    callback,
   );
-
 }
 
 /* ==========================================================
@@ -606,25 +727,17 @@ export function onLinkedIn(callback) {
 ========================================================== */
 
 export function initializeUI() {
-
   resetNetworkInfo();
 
   resetChecklist();
 
   renderEmpty();
 
-  disable(
-    elements.refreshButton
-  );
+  disable(elements.refreshButton);
 
-  disable(
-    elements.copyButton
-  );
+  disable(elements.copyButton);
 
-  disable(
-    elements.linkedinButton
-  );
-
+  toggleQuickLinks(false);
 }
 
 /* ==========================================================
@@ -632,42 +745,24 @@ export function initializeUI() {
 ========================================================== */
 
 export function renderEmpty() {
+  replaceStatusClass("status-warning");
 
-  replaceStatusClass(
-    "status-warning"
-  );
+  setText(elements.statusIcon, ICONS.WARNING);
 
-  setText(
-    elements.statusIcon,
-    ICONS.WARNING
-  );
+  setText(elements.statusTitle, "Waiting...");
 
-  setText(
-    elements.statusTitle,
-    "Waiting..."
-  );
+  setText(elements.statusMessage, UI.EMPTY_TEXT);
 
-  setText(
-    elements.statusMessage,
-    UI.EMPTY_TEXT
-  );
-
-  disable(
-    elements.linkedinButton
-  );
-
+  toggleQuickLinks(false);
 }
 
 /* ==========================================================
    Public
 ========================================================== */
 
-export {
-  elements
-};
+export { elements };
 
 export default {
-
   initializeUI,
 
   renderNetworkInfo,
@@ -698,6 +793,25 @@ export default {
 
   onCopyIP,
 
-  onLinkedIn,
+  toggleQuickLinks,
 
+  renderQuickLinks,
+
+  openLinkModal,
+
+  closeLinkModal,
+
+  clearLinkForm,
+
+  getLinkFormData,
+
+  onAddLink,
+
+  onSaveLink,
+
+  onCancelLink,
+
+  onDeleteLink,
+
+  onReorderLinks,
 };

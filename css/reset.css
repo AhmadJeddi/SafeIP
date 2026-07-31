@@ -14,9 +14,7 @@ Version: 1.0.0
 *,
 *::before,
 *::after {
-
-    box-sizing: border-box;
-
+  box-sizing: border-box;
 }
 
 /* ==========================================================
@@ -24,11 +22,9 @@ Version: 1.0.0
 ========================================================== */
 
 * {
+  margin: 0;
 
-    margin: 0;
-
-    padding: 0;
-
+  padding: 0;
 }
 
 /* ==========================================================
@@ -36,13 +32,11 @@ Version: 1.0.0
 ========================================================== */
 
 html {
+  scroll-behavior: smooth;
 
-    scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 
-    -webkit-text-size-adjust: 100%;
-
-    text-size-adjust: 100%;
-
+  text-size-adjust: 100%;
 }
 
 /* ==========================================================
@@ -50,17 +44,15 @@ html {
 ========================================================== */
 
 body {
+  min-height: 100vh;
 
-    min-height: 100vh;
+  line-height: 1.5;
 
-    line-height: 1.5;
+  text-rendering: optimizeLegibility;
 
-    text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 
-    -webkit-font-smoothing: antialiased;
-
-    -moz-osx-font-smoothing: grayscale;
-
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ==========================================================
@@ -72,11 +64,9 @@ picture,
 svg,
 video,
 canvas {
+  display: block;
 
-    display: block;
-
-    max-width: 100%;
-
+  max-width: 100%;
 }
 
 /* ==========================================================
@@ -87,13 +77,11 @@ input,
 button,
 textarea,
 select {
+  font: inherit;
 
-    font: inherit;
+  color: inherit;
 
-    color: inherit;
-
-    background: transparent;
-
+  background: transparent;
 }
 
 /* ==========================================================
@@ -101,11 +89,9 @@ select {
 ========================================================== */
 
 button {
+  border: none;
 
-    border: none;
-
-    cursor: pointer;
-
+  cursor: pointer;
 }
 
 /* ==========================================================
@@ -113,13 +99,11 @@ button {
 ========================================================== */
 
 a {
+  color: inherit;
 
-    color: inherit;
+  text-decoration: none;
 
-    text-decoration: none;
-
-    cursor:pointer;
-
+  cursor: pointer;
 }
 
 /* ==========================================================
@@ -128,9 +112,7 @@ a {
 
 ul,
 ol {
-
-    list-style: none;
-
+  list-style: none;
 }
 
 /* ==========================================================
@@ -138,11 +120,9 @@ ol {
 ========================================================== */
 
 table {
+  border-collapse: collapse;
 
-    border-collapse: collapse;
-
-    border-spacing: 0;
-
+  border-spacing: 0;
 }
 
 /* ==========================================================
@@ -155,11 +135,9 @@ h3,
 h4,
 h5,
 h6 {
+  font: inherit;
 
-    font: inherit;
-
-    font-weight: inherit;
-
+  font-weight: inherit;
 }
 
 /* ==========================================================
@@ -167,9 +145,7 @@ h6 {
 ========================================================== */
 
 p {
-
-    overflow-wrap: break-word;
-
+  overflow-wrap: break-word;
 }
 
 /* ==========================================================
@@ -177,9 +153,7 @@ p {
 ========================================================== */
 
 ::selection {
-
-    background: rgba(59, 130, 246, 0.25);
-
+  background: rgba(59, 130, 246, 0.25);
 }
 
 /* ==========================================================
@@ -187,9 +161,7 @@ p {
 ========================================================== */
 
 :disabled {
-
-    cursor: not-allowed;
-
+  cursor: not-allowed;
 }
 
 /* ==========================================================
@@ -197,15 +169,7 @@ p {
 ========================================================== */
 
 .disabled {
-
-    pointer-events:none;
-
-}
-
-.hidden {
-
-    display:none;
-
+  pointer-events: none;
 }
 
 /* ==========================================================
@@ -213,9 +177,7 @@ p {
 ========================================================== */
 
 :focus-visible {
+  outline: 2px solid #3b82f6;
 
-    outline: 2px solid #3b82f6;
-
-    outline-offset: 2px;
-
+  outline-offset: 2px;
 }

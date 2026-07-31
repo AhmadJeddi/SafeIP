@@ -3,7 +3,7 @@
 SafeIP
 storage.js
 Local Storage Manager
-Version: 1.0.0
+Version: 1.1.0
 ==========================================================
 */
 
@@ -216,4 +216,68 @@ export function saveAutoRefresh(enabled) {
  */
 export function getAutoRefresh() {
   return load(STORAGE_KEYS.AUTO_REFRESH, false);
+}
+
+/* ==========================================================
+   Quick Links
+========================================================== */
+
+/**
+ * Save quick links
+ *
+ * @param {Array} links
+ */
+export function saveQuickLinks(links) {
+  return save(STORAGE_KEYS.QUICK_LINKS, links);
+}
+
+/**
+ * Load quick links
+ *
+ * @returns {Array}
+ */
+export function getQuickLinks() {
+  return load(STORAGE_KEYS.QUICK_LINKS, []);
+}
+
+/**
+ * Add a quick link
+ *
+ * @param {Object} link
+ * @returns {Array}
+ */
+export function addQuickLink(link) {
+  const links = getQuickLinks();
+
+  links.push(link);
+
+  saveQuickLinks(links);
+
+  return links;
+}
+
+/**
+ * Remove quick link
+ *
+ * @param {number} id
+ * @returns {Array}
+ */
+export function removeQuickLink(id) {
+  const links = getQuickLinks().filter(
+    (link) => String(link.id) !== String(id),
+  );
+
+  saveQuickLinks(links);
+
+  return links;
+}
+
+/**
+ * Update quick links
+ *
+ * @param {Array} links
+ * @returns {boolean}
+ */
+export function updateQuickLinks(links) {
+  return saveQuickLinks(links);
 }

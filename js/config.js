@@ -3,7 +3,7 @@
 SafeIP
 config.js
 Application Configuration
-Version: 1.0.0
+Version: 1.1.0
 ==========================================================
 */
 
@@ -14,7 +14,7 @@ Version: 1.0.0
 export const APP = Object.freeze({
   NAME: "SafeIP",
 
-  VERSION: "1.0.0",
+  VERSION: "1.1.0",
 
   DEFAULT_COUNTRY: "IR",
 });
@@ -34,11 +34,38 @@ export const API = Object.freeze({
 });
 
 /* ==========================================================
-   External Links
+   Quick Links
 ========================================================== */
 
-export const LINKS = Object.freeze({
-  LINKEDIN: "https://www.linkedin.com/login",
+export const QUICK_LINKS = Object.freeze({
+  MAX_TITLE_LENGTH: 14,
+
+  MAX_URL_LENGTH: 200,
+
+  DEFAULT_PROTOCOL: "https://",
+
+  COLORS: [
+    "#2563eb",
+    "#16a34a",
+    "#dc2626",
+    "#7c3aed",
+    "#ea580c",
+    "#0891b2",
+    "#e11d48",
+    "#475569",
+    "#0f766e",
+    "#65a30d",
+    "#ca8a04",
+    "#9333ea",
+    "#c026d3",
+    "#db2777",
+    "#0284c7",
+    "#4f46e5",
+    "#059669",
+    "#b91c1c",
+    "#854d0e",
+    "#334155",
+  ],
 });
 
 /* ==========================================================
@@ -51,6 +78,8 @@ export const STORAGE = Object.freeze({
   LAST_CHECK: "safeip.lastCheck",
 
   AUTO_REFRESH: "safeip.autoRefresh",
+
+  QUICK_LINKS: "safeip.quickLinks",
 });
 
 /* ==========================================================
@@ -142,7 +171,7 @@ export default Object.freeze({
 
   API,
 
-  LINKS,
+  QUICK_LINKS,
 
   STORAGE,
 
