@@ -6,7 +6,7 @@ SafeIP/
 ├── index.html # Main application page
 │
 ├── assets/
-│   ├── logo.svg               # Application logo
+│   ├── logo.png               # Application logo
 │   └── preview.gif            # Project demo animation
 │
 ├── css/
