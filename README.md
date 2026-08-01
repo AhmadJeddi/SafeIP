@@ -3,7 +3,7 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
-[![Version](https://img.shields.io/badge/Version-1.1.0-blue.svg?style=flat-square)](https://github.com/AhmadJeddi/SafeIP/releases/tag/v1.1.0)
+[![Version](https://img.shields.io/badge/Version-1.2.0-blue.svg?style=flat-square)](https://github.com/AhmadJeddi/SafeIP/releases/tag/v1.2.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Live-Demo-22c55e?style=flat-square&logoColor=white)](https://ahmadjeddi.github.io/SafeIP/)
 
@@ -16,15 +16,19 @@ SafeIP is a lightweight web application that compares your detected IP location 
 ## ✨ Features
 
 - 🌍 Detect current IP address
-- 📍 Detect network country and location information
+- 📍 Detect IP-based network location
 - 🏳️ Select expected country manually
 - 🔍 Compare detected country with selected country
 - ✅ Show network safety status
-- 🔒 Prevent login when the network does not match expectations
+- 🔒 Protect configured quick links based on validation result
 - 📋 Copy current IP address
 - 🔄 Refresh network information
-- 💾 Save user preferences using LocalStorage
+- 💾 Persist settings and quick links using LocalStorage
+- 🌙 Dark / Light theme support
 - 📱 Responsive design
+- 🖱️ Drag & drop quick link reordering
+- 📱 Touch-friendly quick link interactions
+- ⚠️ Client-side validation with user-friendly error messages
 
 ---
 
@@ -50,8 +54,10 @@ Features:
 - Save links locally
 - Delete links
 - Drag & drop ordering
+- Touch-friendly drag support for mobile devices
 - Disable links when network is unsafe
 - Enable links after successful validation
+- Improved validation feedback
 
 ---
 
@@ -70,6 +76,9 @@ IP location is analyzed
             |
             ↓
 Country comparison is performed
+            |
+            ↓
+Quick links access is updated
             |
             ↓
 Security status is displayed
@@ -149,6 +158,7 @@ SafeIP/
 │   ├── api.js                   # Network information service
 │   ├── storage.js               # LocalStorage management
 │   ├── ui.js                    # User interface controller
+│   ├── theme.js                 # Theme switching logic
 │   ├── validator.js             # Security validation logic
 │   ├── countries.js             # Country database
 │   ├── quick-links-validator.js # Quick links validation
@@ -169,6 +179,7 @@ SafeIP/
 - Fetch API
 - LocalStorage API
 - Public IP Geolocation APIs
+- CSS Variables based theme system
 
 ---
 
@@ -210,39 +221,6 @@ SafeIP itself does **not**:
 
 Network information is retrieved directly from public IP geolocation services.
 User preferences are stored locally in your browser using LocalStorage.
-
----
-
-## 🔧 Future Improvements
-
-Planned features:
-
-### Security
-
-- VPN / Proxy detection
-- WebRTC leak detection
-- ASN analysis
-- IP reputation checking
-- Risk scoring improvements
-
-### User Experience
-
-- Dark / Light theme
-- Better animations
-- Notification system
-- Internationalization
-
-### Data & History
-
-- Network history timeline
-- Previous IP comparison
-- Security reports
-
-### Platform Expansion
-
-- Browser extension version
-- Desktop application
-- Advanced firewall integration
 
 ---
 

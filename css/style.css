@@ -2,7 +2,7 @@
 ==========================================================
 SafeIP
 style.css
-Version: 1.1.0
+Version: 1.2.0
 ==========================================================
 */
 
@@ -60,6 +60,12 @@ body {
   width: 100%;
 
   padding-inline: 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
 }
 
 .header__brand {
@@ -108,6 +114,40 @@ body {
   font-size: var(--font-size-sm);
 }
 
+/* ======================================================
+ Theme Toggle
+====================================================== */
+
+.theme-toggle {
+  min-width: 44px;
+
+  height: 44px;
+
+  border-radius: 50%;
+
+  background: var(--bg-input);
+
+  border: 1px solid var(--border-color);
+
+  color: var(--text-primary);
+
+  font-size: 20px;
+
+  display: grid;
+
+  place-items: center;
+
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  transform: rotate(15deg);
+
+  background: var(--bg-card-hover);
+}
+
 /* ==========================================================
    Main
 ========================================================== */
@@ -137,10 +177,6 @@ main.container {
 
   box-shadow: var(--shadow-sm);
 
-  backdrop-filter: blur(14px);
-
-  -webkit-backdrop-filter: blur(14px);
-
   transition:
     background var(--transition-normal),
     transform var(--transition-fast),
@@ -163,6 +199,8 @@ main.container {
   font-weight: var(--font-weight-semibold);
 
   color: var(--text-primary);
+
+  text-wrap-mode: nowrap;
 }
 
 /* ==========================================================
@@ -304,7 +342,7 @@ p {
 
   font-size: var(--font-size-xl);
 
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--status-icon-bg);
 
   backdrop-filter: blur(10px);
 
@@ -337,7 +375,7 @@ p {
   background: linear-gradient(
     135deg,
     rgba(34, 197, 94, 0.18),
-    rgba(255, 255, 255, 0.45)
+    var(--status-gradient-base)
   );
 }
 
@@ -347,7 +385,7 @@ p {
   background: linear-gradient(
     135deg,
     rgba(245, 158, 11, 0.18),
-    rgba(255, 255, 255, 0.45)
+    var(--status-gradient-base)
   );
 }
 
@@ -357,7 +395,7 @@ p {
   background: linear-gradient(
     135deg,
     rgba(239, 68, 68, 0.18),
-    rgba(255, 255, 255, 0.45)
+    var(--status-gradient-base)
   );
 }
 
@@ -602,6 +640,30 @@ p {
 }
 
 /* ==========================================================
+   Form Validation UI
+========================================================== */
+
+.input-error {
+  display: none;
+
+  margin-top: var(--space-2);
+
+  font-size: var(--font-size-sm);
+
+  color: var(--color-danger);
+}
+
+.input-error.show {
+  display: block;
+}
+
+.input-invalid {
+  border-color: var(--color-danger) !important;
+
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+/* ==========================================================
    Quick Links
 ========================================================== */
 
@@ -623,6 +685,8 @@ p {
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
 
   gap: var(--space-4);
+
+  user-select: none;
 }
 
 /* ==========================================================
@@ -631,8 +695,10 @@ p {
 
 .quick-link-wrapper {
   position: relative;
+
   cursor: grab;
-  touch-action: none;
+
+  touch-action: pan-y;
 }
 
 /* ==========================================================
@@ -782,6 +848,8 @@ p {
   opacity: 0.5;
 
   transform: scale(0.96);
+
+  cursor: grabbing;
 }
 
 /* ==========================================================
@@ -947,14 +1015,12 @@ p {
     grid-template-columns: 1fr;
   }
 
-  .header__brand {
-    flex-direction: column;
-
-    align-items: flex-start;
-  }
-
   .header__brand p {
     margin-top: 0;
+  }
+
+  .header__logo {
+    min-width: 48px;
   }
 
   .status__icon {

@@ -3,7 +3,7 @@
 SafeIP
 ui.js
 UI Layer
-Version: 1.2.0
+Version: 1.3.0
 ==========================================================
 */
 
@@ -70,6 +70,8 @@ const elements = {
   saveLinkButton: document.getElementById("saveLinkButton"),
 
   cancelLinkButton: document.getElementById("cancelLinkButton"),
+
+  themeButton: document.getElementById("themeToggle"),
 };
 
 /* ==========================================================
@@ -434,6 +436,14 @@ export function clearLinkForm() {
   const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
   elements.linkColor.value = randomColor;
+
+  /*
+  Reset previous validation states
+  when opening a fresh form.
+  */
+  showInputError("linkTitle", "linkTitleError", null);
+
+  showInputError("linkUrl", "linkUrlError", null);
 }
 
 /* ==========================================================
@@ -448,6 +458,42 @@ export function getLinkFormData() {
 
     color: elements.linkColor.value,
   };
+}
+
+/* ==========================================================
+   Quick Link Validation UI
+========================================================== */
+
+/**
+ * Show validation message near input
+ *
+ * @param {string} inputId
+ * @param {string} errorId
+ * @param {string|null} message
+ */
+
+export function showInputError(inputId, errorId, message) {
+  const input = document.getElementById(inputId);
+
+  const error = document.getElementById(errorId);
+
+  if (!input || !error) {
+    return;
+  }
+
+  if (message) {
+    input.classList.add("input-invalid");
+
+    error.textContent = message;
+
+    error.classList.add("show");
+  } else {
+    input.classList.remove("input-invalid");
+
+    error.textContent = "";
+
+    error.classList.remove("show");
+  }
 }
 
 /* ==========================================================
@@ -499,9 +545,9 @@ export function renderQuickLinks(links) {
 
     wrapper.className = "quick-link-wrapper";
 
-    wrapper.draggable = true;
+    wrapper.dataset.id = String(link.id);
 
-    wrapper.dataset.id = link.id;
+    enableQuickLinkDrag(wrapper);
 
     const button = document.createElement("a");
 
@@ -510,6 +556,8 @@ export function renderQuickLinks(links) {
     IP validation succeeds.
     */
     button.className = "btn quick-link";
+
+    button.draggable = false;
 
     if (!quickLinksEnabled) {
       button.classList.add("disabled");
@@ -532,14 +580,6 @@ export function renderQuickLinks(links) {
     /* 
     Drag Events
     */
-    wrapper.addEventListener("dragstart", handleDragStart);
-
-    wrapper.addEventListener("dragover", handleDragOver);
-
-    wrapper.addEventListener("drop", handleDrop);
-
-    wrapper.addEventListener("dragend", handleDragEnd);
-
     deleteButton.className = "quick-link-delete";
 
     deleteButton.type = "button";
@@ -558,66 +598,101 @@ export function renderQuickLinks(links) {
 
 /* ==========================================================
    Quick Links Drag & Drop
+   Supports Mouse + Touch
 ========================================================== */
 
-let draggedElement = null;
+function enableQuickLinkDrag(element) {
+  let startX = 0;
+  let startY = 0;
 
-/**
- * Start dragging
- */
-function handleDragStart(event) {
-  draggedElement = event.currentTarget;
+  let isDragging = false;
 
-  event.dataTransfer.effectAllowed = "move";
+  let pointerId = null;
 
-  event.currentTarget.classList.add("dragging");
-}
+  element.addEventListener("pointerdown", (event) => {
+    /*
+      Detect pointer start.
+      Drag should not begin immediately
+      because this can be a normal link click.
+    */
+    startX = event.clientX;
+    startY = event.clientY;
 
-/**
- * Allow dropping
- */
-function handleDragOver(event) {
-  event.preventDefault();
+    pointerId = event.pointerId;
 
-  event.dataTransfer.dropEffect = "move";
-}
+    isDragging = false;
+  });
 
-/**
- * Drop element
- */
-function handleDrop(event) {
-  event.preventDefault();
+  element.addEventListener("pointermove", (event) => {
+    if (pointerId !== event.pointerId) {
+      return;
+    }
 
-  const target = event.currentTarget;
+    const distance =
+      Math.abs(event.clientX - startX) + Math.abs(event.clientY - startY);
 
-  if (!draggedElement || draggedElement === target) {
-    return;
-  }
+    /*
+      Movement smaller than 8 pixels
+      is considered a normal click.
+    */
+    if (distance < 8) {
+      return;
+    }
 
-  const container = elements.quickLinksContainer;
+    if (!isDragging) {
+      isDragging = true;
 
-  const items = [...container.children];
+      element.classList.add("dragging");
 
-  const draggedIndex = items.indexOf(draggedElement);
+      /*
+        Enable pointer capture only
+        after dragging has actually started.
+      */
+      element.setPointerCapture(event.pointerId);
+    }
 
-  const targetIndex = items.indexOf(target);
+    const target = document
+      .elementFromPoint(event.clientX, event.clientY)
+      ?.closest(".quick-link-wrapper");
 
-  if (draggedIndex < targetIndex) {
-    container.insertBefore(draggedElement, target.nextSibling);
-  } else {
-    container.insertBefore(draggedElement, target);
-  }
+    if (target && target !== element) {
+      const container = elements.quickLinksContainer;
 
-  updateQuickLinksOrder();
-}
+      const items = [...container.children];
 
-/**
- * End dragging
- */
-function handleDragEnd(event) {
-  event.currentTarget.classList.remove("dragging");
+      const current = items.indexOf(element);
 
-  draggedElement = null;
+      const targetIndex = items.indexOf(target);
+
+      if (current < targetIndex) {
+        container.insertBefore(element, target.nextSibling);
+      } else {
+        container.insertBefore(element, target);
+      }
+    }
+  });
+
+  element.addEventListener("pointerup", (event) => {
+    if (isDragging) {
+      if (element.hasPointerCapture(event.pointerId)) {
+        element.releasePointerCapture(event.pointerId);
+      }
+
+      updateQuickLinksOrder();
+    }
+
+    element.classList.remove("dragging");
+
+    isDragging = false;
+
+    pointerId = null;
+  });
+
+  element.addEventListener("pointercancel", () => {
+    element.classList.remove("dragging");
+
+    isDragging = false;
+  });
 }
 
 /* ==========================================================
@@ -678,6 +753,36 @@ export async function copyIPAddress() {
 /* ==========================================================
    Events
 ========================================================== */
+
+/**
+ * Clear validation errors while user is typing
+ *
+ * Improves UX by removing old
+ * validation messages immediately
+ * when user starts correcting input.
+ */
+export function bindValidationInputEvents() {
+  elements.linkTitle?.addEventListener("input", () => {
+    showInputError("linkTitle", "linkTitleError", null);
+  });
+
+  elements.linkUrl?.addEventListener("input", () => {
+    showInputError("linkUrl", "linkUrlError", null);
+  });
+}
+
+/**
+ * Bind theme toggle button event
+ *
+ * Theme switching logic is handled
+ * inside theme.js.
+ *
+ * This function only connects
+ * the UI button with the callback.
+ */
+export function onThemeToggle(callback) {
+  elements.themeButton?.addEventListener("click", callback);
+}
 
 export function onRefresh(callback) {
   elements.refreshButton?.addEventListener("click", callback);
@@ -814,4 +919,8 @@ export default {
   onDeleteLink,
 
   onReorderLinks,
+
+  showInputError,
+
+  bindValidationInputEvents,
 };

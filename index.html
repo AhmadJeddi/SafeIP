@@ -12,12 +12,17 @@
 
     <title>SafeIP</title>
 
-    <link
-      type="image/png"
-      sizes="96x96"
-      rel="icon"
-      href="assets/logo.png"
-    />
+    <link type="image/png" sizes="96x96" rel="icon" href="assets/logo.png" />
+
+    <!-- ================= Early Theme Initialization ================= -->
+
+    <script>
+      const savedTheme = localStorage.getItem("safeip-theme");
+
+      if (savedTheme) {
+        document.documentElement.setAttribute("data-theme", savedTheme);
+      }
+    </script>
 
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/variables.css" />
@@ -38,6 +43,15 @@
             </p>
           </div>
         </div>
+
+        <button
+          id="themeToggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="Toggle theme"
+        >
+          🌙
+        </button>
       </div>
     </header>
 
@@ -190,11 +204,26 @@
 
         <label for="linkTitle"> Title </label>
 
-        <input id="linkTitle" type="text" maxlength="14" placeholder="GitHub" />
+        <input
+          id="linkTitle"
+          type="text"
+          required
+          maxlength="14"
+          placeholder="GitHub"
+        />
+
+        <p id="linkTitleError" class="input-error"></p>
 
         <label for="linkUrl"> URL </label>
 
-        <input id="linkUrl" type="url" placeholder="https://github.com" />
+        <input
+          id="linkUrl"
+          type="url"
+          required
+          placeholder="https://github.com"
+        />
+
+        <p id="linkUrlError" class="input-error"></p>
 
         <label for="linkColor"> Color </label>
 
@@ -215,7 +244,7 @@
     <footer class="footer">
       <div class="container">
         <small>
-          SafeIP v1.1.0 · Developed by
+          SafeIP v1.2.0 · Developed by
           <a
             href="https://github.com/AhmadJeddi/SafeIP"
             target="_blank"

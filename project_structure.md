@@ -19,6 +19,7 @@ SafeIP/
 │   ├── api.js # IP and network information service
 │   ├── storage.js # LocalStorage management
 │   ├── ui.js # User interface rendering and interactions
+│   ├── theme.js # Theme switching logic
 │   ├── validator.js # Network security validation logic
 │   ├── countries.js # Country data and selector generation
 │   ├── quick-links-validator.js # Quick links validation

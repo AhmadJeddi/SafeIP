@@ -3,9 +3,11 @@
 SafeIP
 app.js
 Application Entry Point
-Version: 1.2.0
+Version: 1.3.0
 ==========================================================
 */
+
+import { initTheme, toggleTheme } from "./theme.js";
 
 import { createCountryOptions } from "./countries.js";
 
@@ -40,6 +42,9 @@ import {
   onCancelLink,
   onDeleteLink,
   onReorderLinks,
+  showInputError,
+  bindValidationInputEvents,
+  onThemeToggle,
 } from "./ui.js";
 
 import {
@@ -132,8 +137,24 @@ function handleSaveLink() {
 
   const validation = validateQuickLink(data);
 
+  /*
+  Clear previous validation states
+  */
+
+  showInputError("linkTitle", "linkTitleError", null);
+
+  showInputError("linkUrl", "linkUrlError", null);
+
   if (!validation.valid) {
-    alert(validation.message);
+    /*
+    Show validation message near related field
+    */
+
+    if (validation.message.includes("Title")) {
+      showInputError("linkTitle", "linkTitleError", validation.message);
+    } else {
+      showInputError("linkUrl", "linkUrlError", validation.message);
+    }
 
     return;
   }
@@ -143,7 +164,7 @@ function handleSaveLink() {
   */
 
   if (isDuplicateURL(validation.data.url, state.quickLinks)) {
-    alert("This link already exists.");
+    showInputError("linkUrl", "linkUrlError", "This link already exists.");
 
     return;
   }
@@ -277,6 +298,19 @@ function bindEvents() {
   onDeleteLink(handleDeleteLink);
 
   onReorderLinks(handleReorderLinks);
+
+  /*
+  Clear Quick Link validation
+  messages while typing.
+  */
+  bindValidationInputEvents();
+
+  /*
+  Handles switching between dark and light themes.
+  Theme preference is managed inside theme.js.
+  */
+
+  onThemeToggle(toggleTheme);
 }
 
 /* ==========================================================
@@ -284,6 +318,8 @@ function bindEvents() {
 ========================================================== */
 
 async function initialize() {
+  initTheme();
+
   initializeUI();
 
   loadCountries();

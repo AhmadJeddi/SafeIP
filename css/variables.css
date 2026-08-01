@@ -2,7 +2,7 @@
 ==========================================================
 SafeIP
 CSS Variables
-Version: 1.0.0
+Version: 1.1.0
 ==========================================================
 */
 
@@ -38,6 +38,10 @@ Version: 1.0.0
   --bg-input: rgba(255, 255, 255, 0.85);
 
   --bg-disabled: #cbd5e1;
+
+  --status-gradient-base: rgba(255, 255, 255, 0.45);
+
+  --status-icon-bg: rgba(255, 255, 255, 0.35);
 
   /* ======================================================
       Text
@@ -182,4 +186,40 @@ Version: 1.0.0
   --z-modal: 1000;
 
   --z-toast: 2000;
+}
+
+/* ======================================================
+   Dark Theme
+====================================================== */
+
+[data-theme="dark"] {
+  --bg-body: linear-gradient(135deg, #020617, #0f172a, #1e293b);
+
+  --bg-card: rgba(15, 23, 42, 0.75);
+
+  --bg-card-hover: rgba(30, 41, 59, 0.9);
+
+  --bg-input: rgba(30, 41, 59, 0.8);
+
+  --bg-disabled: #334155;
+
+  --status-gradient-base: rgba(15, 23, 42, 0.55);
+
+  --status-icon-bg: rgba(0, 0, 0, 0.25);
+
+  --text-primary: #f8fafc;
+
+  --text-secondary: #cbd5e1;
+
+  --text-muted: #94a3b8;
+
+  --text-disabled: #64748b;
+
+  --border-color: rgba(148, 163, 184, 0.25);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.4);
+
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
