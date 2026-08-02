@@ -236,8 +236,17 @@ export function saveQuickLinks(links) {
  *
  * @returns {Array}
  */
+const DEFAULT_QUICK_LINKS = [
+  {
+    id: 1,
+    title: "Author's LinkedIn",
+    url: "https://www.linkedin.com/in/ahmad-jeddizahed",
+    color: "#0A66C2",
+  },
+];
+
 export function getQuickLinks() {
-  return load(STORAGE_KEYS.QUICK_LINKS, []);
+  return load(STORAGE_KEYS.QUICK_LINKS, DEFAULT_QUICK_LINKS);
 }
 
 /**
