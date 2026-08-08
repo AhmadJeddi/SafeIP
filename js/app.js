@@ -3,7 +3,7 @@
 SafeIP
 app.js
 Application Entry Point
-Version: 1.3.0
+Version: 1.4.0
 ==========================================================
 */
 
@@ -45,6 +45,8 @@ import {
   showInputError,
   bindValidationInputEvents,
   onThemeToggle,
+  onExportSettings,
+  onImportSettings,
 } from "./ui.js";
 
 import {
@@ -54,6 +56,8 @@ import {
   addQuickLink,
   removeQuickLink,
   updateQuickLinks,
+  exportStorage,
+  importStorage,
 } from "./storage.js";
 
 import { APP } from "./config.js";
@@ -219,6 +223,94 @@ function handleReorderLinks(event) {
 }
 
 /* ==========================================================
+   Export Settings
+========================================================== */
+
+function handleExportSettings() {
+  const backup = exportStorage();
+
+  if (!backup) {
+    console.error("Unable to export settings.");
+
+    return;
+  }
+
+  const json = JSON.stringify(backup, null, 2);
+
+  const blob = new Blob([json], {
+    type: "application/json",
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+
+  link.href = url;
+
+  link.download = "safeip-settings.json";
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  link.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+/* ==========================================================
+   Import Settings
+========================================================== */
+
+function handleImportSettings(file) {
+  if (!file) {
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    try {
+      const backup = JSON.parse(reader.result);
+
+      const confirmed = window.confirm(
+        "Importing settings will replace your current SafeIP settings. Continue?",
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      const success = importStorage(backup);
+
+      if (!success) {
+        window.alert("Unable to import SafeIP settings.");
+
+        return;
+      }
+
+      /*
+       * Reload application so all imported settings
+       * are applied correctly.
+       */
+      window.location.reload();
+    } catch (error) {
+      console.error("Import Error:", error);
+
+      window.alert("Invalid SafeIP settings file.");
+    }
+  };
+
+  reader.onerror = () => {
+    console.error("Unable to read settings file.");
+
+    window.alert("Unable to read the selected file.");
+  };
+
+  reader.readAsText(file);
+}
+
+/* ==========================================================
    Network Refresh
 ========================================================== */
 
@@ -299,18 +391,13 @@ function bindEvents() {
 
   onReorderLinks(handleReorderLinks);
 
-  /*
-  Clear Quick Link validation
-  messages while typing.
-  */
   bindValidationInputEvents();
 
-  /*
-  Handles switching between dark and light themes.
-  Theme preference is managed inside theme.js.
-  */
-
   onThemeToggle(toggleTheme);
+
+  onExportSettings(handleExportSettings);
+
+  onImportSettings(handleImportSettings);
 }
 
 /* ==========================================================

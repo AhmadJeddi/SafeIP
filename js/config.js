@@ -3,7 +3,7 @@
 SafeIP
 config.js
 Application Configuration
-Version: 1.1.0
+Version: 1.1.1
 ==========================================================
 */
 
@@ -14,7 +14,7 @@ Version: 1.1.0
 export const APP = Object.freeze({
   NAME: "SafeIP",
 
-  VERSION: "1.1.0",
+  VERSION: "1.3.0",
 
   DEFAULT_COUNTRY: "IR",
 });
@@ -80,6 +80,8 @@ export const STORAGE = Object.freeze({
   AUTO_REFRESH: "safeip.autoRefresh",
 
   QUICK_LINKS: "safeip.quickLinks",
+
+  THEME: "safeip-theme",
 });
 
 /* ==========================================================

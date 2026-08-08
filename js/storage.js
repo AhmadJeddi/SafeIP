@@ -3,7 +3,7 @@
 SafeIP
 storage.js
 Local Storage Manager
-Version: 1.1.0
+Version: 1.2.0
 ==========================================================
 */
 
@@ -289,4 +289,99 @@ export function removeQuickLink(id) {
  */
 export function updateQuickLinks(links) {
   return saveQuickLinks(links);
+}
+
+/* ==========================================================
+   Export / Import
+========================================================== */
+
+/**
+ * Export SafeIP localStorage data
+ *
+ * @returns {Object|null}
+ */
+export function exportStorage() {
+  if (!isStorageAvailable()) {
+    return null;
+  }
+
+  try {
+    const storage = {};
+
+    Object.values(STORAGE_KEYS).forEach((key) => {
+      const value = localStorage.getItem(key);
+
+      if (value === null) {
+        return;
+      }
+
+      try {
+        storage[key] = JSON.parse(value);
+      } catch {
+        storage[key] = value;
+      }
+    });
+
+    return {
+      app: "SafeIP",
+
+      version: "1.3.0",
+
+      exportedAt: new Date().toISOString(),
+
+      storage,
+    };
+  } catch (error) {
+    console.error("Storage Export Error:", error);
+
+    return null;
+  }
+}
+
+/**
+ * Import SafeIP localStorage data
+ *
+ * @param {Object} backup
+ * @returns {boolean}
+ */
+export function importStorage(backup) {
+  if (!isStorageAvailable()) {
+    return false;
+  }
+
+  try {
+    if (!backup || typeof backup !== "object") {
+      throw new Error("Invalid backup file.");
+    }
+
+    if (backup.app !== "SafeIP") {
+      throw new Error("This file is not a SafeIP backup.");
+    }
+
+    if (!backup.storage || typeof backup.storage !== "object") {
+      throw new Error("Invalid SafeIP backup format.");
+    }
+
+    /* Restore SafeIP storage keys */
+    Object.values(STORAGE_KEYS).forEach((key) => {
+      localStorage.removeItem(key);
+
+      if (!Object.prototype.hasOwnProperty.call(backup.storage, key)) {
+        return;
+      }
+
+      const value = backup.storage[key];
+
+      localStorage.setItem(
+        key,
+        typeof value === "string" ? value : JSON.stringify(value),
+      );
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Storage Import Error:", error);
+
+    return false;
+  }
 }

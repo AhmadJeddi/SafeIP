@@ -2,7 +2,8 @@
 ==========================================================
 SafeIP
 style.css
-Version: 1.2.0
+Main application styles
+Version: 1.2.1
 ==========================================================
 */
 
@@ -698,7 +699,7 @@ p {
 
   cursor: grab;
 
-  touch-action: pan-y;
+  touch-action: pinch-zoom;
 }
 
 /* ==========================================================
@@ -708,9 +709,9 @@ p {
 .quick-link-delete {
   position: absolute;
 
-  top: -8px;
+  top: -9px;
 
-  right: -8px;
+  right: -9px;
 
   width: 24px;
 
@@ -822,6 +823,8 @@ p {
   align-items: center;
 
   height: var(--button-height);
+
+  width: 100%;
 
   border-radius: var(--radius-md);
 

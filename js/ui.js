@@ -3,7 +3,7 @@
 SafeIP
 ui.js
 UI Layer
-Version: 1.3.0
+Version: 1.4.0
 ==========================================================
 */
 
@@ -72,6 +72,12 @@ const elements = {
   cancelLinkButton: document.getElementById("cancelLinkButton"),
 
   themeButton: document.getElementById("themeToggle"),
+
+  exportSettingsButton: document.getElementById("exportSettingsButton"),
+
+  importSettingsButton: document.getElementById("importSettingsButton"),
+
+  importSettingsInput: document.getElementById("importSettingsInput"),
 };
 
 /* ==========================================================
@@ -827,6 +833,29 @@ export function onReorderLinks(callback) {
   );
 }
 
+export function onExportSettings(callback) {
+  elements.exportSettingsButton?.addEventListener("click", callback);
+}
+
+export function onImportSettings(callback) {
+  elements.importSettingsButton?.addEventListener("click", () => {
+    elements.importSettingsInput?.click();
+  });
+
+  elements.importSettingsInput?.addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      callback(file);
+    }
+
+    /*
+     * Allow importing the same file again
+     */
+    event.target.value = "";
+  });
+}
+
 /* ==========================================================
    Initialize
 ========================================================== */
@@ -923,4 +952,8 @@ export default {
   showInputError,
 
   bindValidationInputEvents,
+
+  onExportSettings,
+
+  onImportSettings,
 };

@@ -12,7 +12,7 @@
 
     <title>SafeIP</title>
 
-    <link type="image/png" sizes="96x96" rel="icon" href="assets/logo.png" />
+    <link type="image/png" sizes="96x96" rel="icon" href="assets/favicon.png" />
 
     <!-- ================= Early Theme Initialization ================= -->
 
@@ -176,9 +176,32 @@
           Refresh
         </button>
 
-        <button id="copyButton" class="btn btn-secondary" type="button">
+        <button id="copyButton" class="btn btn-success" type="button">
           Copy IP
         </button>
+
+        <button
+          id="exportSettingsButton"
+          class="btn btn-secondary"
+          type="button"
+        >
+          Export Settings
+        </button>
+
+        <button
+          id="importSettingsButton"
+          class="btn btn-secondary"
+          type="button"
+        >
+          Import Settings
+        </button>
+
+        <input
+          type="file"
+          id="importSettingsInput"
+          accept="application/json,.json"
+          hidden
+        />
       </section>
 
       <!-- ================= QUICK LINKS ================= -->
@@ -244,7 +267,7 @@
     <footer class="footer">
       <div class="container">
         <small>
-          SafeIP v1.2.0 · Developed by
+          SafeIP v1.3.0 · Developed by
           <a
             href="https://github.com/AhmadJeddi/SafeIP"
             target="_blank"

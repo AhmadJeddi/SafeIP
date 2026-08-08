@@ -3,11 +3,13 @@
 SafeIP
 theme.js
 Dark / Light Theme Manager
-Version: 1.0.0
+Version: 1.0.1
 ==========================================================
 */
 
-const STORAGE_KEY = "safeip-theme";
+import { STORAGE } from "./config.js";
+
+const STORAGE_KEY = STORAGE.THEME;
 
 export function initTheme() {
   const savedTheme = localStorage.getItem(STORAGE_KEY);

@@ -3,7 +3,7 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
-[![Version](https://img.shields.io/badge/Version-1.2.0-blue.svg?style=flat-square)](https://github.com/AhmadJeddi/SafeIP/releases/tag/v1.2.0)
+[![Version](https://img.shields.io/badge/Version-1.3.0-blue.svg?style=flat-square)](https://github.com/AhmadJeddi/SafeIP/releases/tag/v1.3.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Live-Demo-22c55e?style=flat-square&logoColor=white)](https://ahmadjeddi.github.io/SafeIP/)
 
@@ -24,6 +24,7 @@ SafeIP is a lightweight web application that compares your detected IP location 
 - 📋 Copy current IP address
 - 🔄 Refresh network information
 - 💾 Persist settings and quick links using LocalStorage
+- 📤 Export and Import settings
 - 🌙 Dark / Light theme support
 - 📱 Responsive design
 - 🖱️ Drag & drop quick link reordering
@@ -41,6 +42,8 @@ SafeIP performs multiple security checks:
 - ✅ Country location verification
 - ✅ Protected link access control
 
+The Quick Links section remains locked until the network passes the required security validation.
+
 ---
 
 ## 🔗 Quick Links
@@ -57,7 +60,8 @@ Features:
 - Touch-friendly drag support for mobile devices
 - Disable links when network is unsafe
 - Enable links after successful validation
-- Improved validation feedback
+- Client-side link validation
+- Duplicate URL detection
 
 ---
 
@@ -65,7 +69,7 @@ Features:
 
 SafeIP follows this workflow:
 
-```
+```text
 User selects expected country
             |
             ↓
@@ -76,6 +80,9 @@ IP location is analyzed
             |
             ↓
 Country comparison is performed
+            |
+            ↓
+Security status is determined
             |
             ↓
 Quick links access is updated
@@ -145,7 +152,7 @@ SafeIP/
 ├── index.html                   # Main application page
 │
 ├── assets/
-│   ├── logo.png                 # Application logo
+│   ├── favicon.png              # Application Favicon
 │   └── preview.gif              # Project demo animation
 │
 ├── css/
