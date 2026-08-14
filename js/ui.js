@@ -3,14 +3,19 @@
 SafeIP
 ui.js
 UI Layer
-Version: 1.4.0
+Version: 1.5.0
 ==========================================================
 */
 
 import { ICONS, UI, QUICK_LINKS } from "./config.js";
+import { countries, getCountryByCode } from "./countries.js";
 
 let copyFeedbackTimer = null;
 let quickLinksEnabled = false;
+
+let countrySearchInitialized = false;
+let countrySearchResults = [];
+let countrySearchActiveIndex = -1;
 
 /* ==========================================================
    DOM Cache
@@ -18,6 +23,20 @@ let quickLinksEnabled = false;
 
 const elements = {
   countrySelect: document.getElementById("countrySelect"),
+
+  countrySearch: document.getElementById("countrySearch"),
+
+  countryCard: document.getElementById("countryCard"),
+
+  countrySearchInput: document.getElementById("countrySearchInput"),
+
+  countryOptions: document.getElementById("countryOptions"),
+
+  networkCard: document.getElementById("networkCard"),
+
+  checklistCard: document.getElementById("checklistCard"),
+
+  lastCheckCard: document.getElementById("lastCheckCard"),
 
   ipAddress: document.getElementById("ipAddress"),
 
@@ -64,6 +83,10 @@ const elements = {
   linkTitle: document.getElementById("linkTitle"),
 
   linkUrl: document.getElementById("linkUrl"),
+
+  linkFaviconPreview: document.getElementById("linkFaviconPreview"),
+
+  linkFaviconPreviewImage: document.getElementById("linkFaviconPreviewImage"),
 
   linkColor: document.getElementById("linkColor"),
 
@@ -141,45 +164,89 @@ function replaceStatusClass(className) {
 export function renderNetworkInfo(data) {
   setText(elements.ipAddress, data.ip || UI.DEFAULT_IP);
 
-  setText(elements.countryName, data.country || UI.DEFAULT_COUNTRY);
+  const country =
+    !data.country || data.country === "Unknown"
+      ? UI.UNAVAILABLE_COUNTRY
+      : data.country;
 
-  setText(elements.countryCode, data.countryCode || UI.DEFAULT_COUNTRY_CODE);
+  const countryCode =
+    !data.countryCode || data.countryCode === "UN"
+      ? UI.UNAVAILABLE_COUNTRY_CODE
+      : data.countryCode;
 
-  setText(elements.regionName, data.region || UI.DEFAULT_REGION);
+  setText(elements.countryName, country);
 
-  setText(elements.cityName, data.city || UI.DEFAULT_CITY);
+  setText(elements.countryCode, countryCode);
 
-  setText(elements.ispName, data.isp || UI.DEFAULT_ISP);
+  setText(elements.regionName, data.region || UI.UNAVAILABLE_REGION);
 
-  setText(elements.timezone, data.timezone || UI.DEFAULT_TIMEZONE);
+  setText(elements.cityName, data.city || UI.UNAVAILABLE_CITY);
+
+  setText(elements.ispName, data.isp || UI.UNAVAILABLE_ISP);
+
+  setText(elements.timezone, data.timezone || UI.UNAVAILABLE_TIMEZONE);
 }
 
 /* ==========================================================
    Loading
 ========================================================== */
 
+function setSkeletonLoading(enabled) {
+  document.body?.classList.toggle("app-loading", enabled);
+  const textElements = [
+    elements.ipAddress,
+    elements.countryName,
+    elements.countryCode,
+    elements.regionName,
+    elements.cityName,
+    elements.timezone,
+    elements.ispName,
+    elements.lastChecked,
+    elements.statusTitle,
+    elements.statusMessage,
+  ];
+
+  textElements.forEach((element) => {
+    element?.classList.toggle("skeleton-text", enabled);
+  });
+
+  elements.statusIcon?.classList.toggle("skeleton-circle", enabled);
+
+  [
+    elements.checkCountry,
+    elements.checkInternet,
+    elements.checkApi,
+    elements.checkLogin,
+  ].forEach((element) => {
+    element?.classList.toggle("skeleton-row", enabled);
+  });
+
+  elements.networkCard?.setAttribute("aria-busy", String(enabled));
+  elements.statusCard?.setAttribute("aria-busy", String(enabled));
+  elements.checklistCard?.setAttribute("aria-busy", String(enabled));
+}
+
 export function showLoading() {
   setText(elements.statusIcon, ICONS.LOADING);
-
   setText(elements.statusTitle, "Checking...");
-
   setText(elements.copyButton, "Copy IP");
-
   setText(elements.statusMessage, UI.LOADING_TEXT);
 
   disable(elements.copyButton);
-
   disable(elements.refreshButton);
 
   clearTimeout(copyFeedbackTimer);
 
-  // Lock Quick Links while checking network
+  setSkeletonLoading(true);
+
+  // Lock Quick Links while checking network.
   toggleQuickLinks(false);
 }
 
 export function hideLoading() {
-  enable(elements.copyButton);
+  setSkeletonLoading(false);
 
+  enable(elements.copyButton);
   enable(elements.refreshButton);
 }
 
@@ -403,8 +470,238 @@ export function stopLoadingState() {
 }
 
 /* ==========================================================
-   Country Selector
+   Country Search Selector
 ========================================================== */
+
+function normalizeCountrySearch(value) {
+  return value.trim().toLocaleLowerCase();
+}
+
+function getCountryLabel(country) {
+  return `${country.flag} ${country.name} (${country.code})`;
+}
+
+function renderCountrySearchResults(query = "") {
+  const normalizedQuery = normalizeCountrySearch(query);
+
+  countrySearchResults = countries.filter((country) => {
+    if (!normalizedQuery) return true;
+
+    return (
+      normalizeCountrySearch(country.name).includes(normalizedQuery) ||
+      normalizeCountrySearch(country.code).includes(normalizedQuery)
+    );
+  });
+
+  countrySearchActiveIndex = countrySearchResults.length ? 0 : -1;
+
+  if (!elements.countryOptions) return;
+
+  elements.countryOptions.innerHTML = "";
+
+  if (!countrySearchResults.length) {
+    const empty = document.createElement("div");
+    empty.className = "country-search__empty";
+    empty.textContent = "No countries found.";
+    elements.countryOptions.appendChild(empty);
+    elements.countrySearchInput?.removeAttribute("aria-activedescendant");
+    return;
+  }
+
+  countrySearchResults.forEach((country, index) => {
+    const option = document.createElement("button");
+
+    option.type = "button";
+    option.className = "country-search__option";
+    option.setAttribute("role", "option");
+    option.dataset.code = country.code;
+    option.id = `country-option-${country.code}`;
+
+    const flag = document.createElement("span");
+    flag.className = "country-search__flag";
+    flag.textContent = country.flag;
+
+    const name = document.createElement("span");
+    name.className = "country-search__name";
+    name.textContent = country.name;
+
+    const code = document.createElement("span");
+    code.className = "country-search__code";
+    code.textContent = country.code;
+
+    option.append(flag, name, code);
+
+    option.addEventListener("mousedown", (event) => {
+      event.preventDefault();
+    });
+
+    option.addEventListener("click", () => {
+      selectCountry(country.code);
+    });
+
+    elements.countryOptions.appendChild(option);
+
+    if (index === countrySearchActiveIndex) {
+      option.classList.add("is-active");
+    }
+  });
+
+  updateCountrySearchActiveOption();
+}
+
+function updateCountrySearchActiveOption() {
+  const options = [
+    ...(elements.countryOptions?.querySelectorAll(".country-search__option") ||
+      []),
+  ];
+
+  options.forEach((option, index) => {
+    const active = index === countrySearchActiveIndex;
+    option.classList.toggle("is-active", active);
+  });
+
+  const activeOption = options[countrySearchActiveIndex];
+
+  if (activeOption) {
+    elements.countrySearchInput?.setAttribute(
+      "aria-activedescendant",
+      activeOption.id,
+    );
+
+    activeOption.scrollIntoView({
+      block: "nearest",
+    });
+  } else {
+    elements.countrySearchInput?.removeAttribute("aria-activedescendant");
+  }
+}
+
+function openCountrySearch() {
+  elements.countryOptions?.classList.remove("hidden");
+  elements.countryCard?.classList.add("is-country-open");
+  elements.countrySearchInput?.setAttribute("aria-expanded", "true");
+
+  renderCountrySearchResults(elements.countrySearchInput?.value || "");
+}
+
+function closeCountrySearch() {
+  elements.countryOptions?.classList.add("hidden");
+  elements.countryCard?.classList.remove("is-country-open");
+  elements.countrySearchInput?.setAttribute("aria-expanded", "false");
+}
+
+function selectCountry(code, dispatchChange = true) {
+  const country = getCountryByCode(code);
+
+  if (!country || !elements.countrySelect) {
+    return;
+  }
+
+  const previousValue = elements.countrySelect.value;
+
+  elements.countrySelect.value = country.code;
+  elements.countrySearchInput.value = getCountryLabel(country);
+
+  closeCountrySearch();
+
+  if (dispatchChange && previousValue !== country.code) {
+    elements.countrySelect.dispatchEvent(
+      new Event("change", { bubbles: true }),
+    );
+  }
+}
+
+function bindCountrySearchEvents() {
+  if (countrySearchInitialized || !elements.countrySearchInput) {
+    return;
+  }
+
+  countrySearchInitialized = true;
+
+  elements.countrySearchInput.addEventListener("focus", () => {
+    openCountrySearch();
+
+    // Select the displayed label so typing immediately starts a search.
+    elements.countrySearchInput.select();
+  });
+
+  elements.countrySearchInput.addEventListener("input", () => {
+    openCountrySearch();
+  });
+
+  elements.countrySearchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeCountrySearch();
+      return;
+    }
+
+    if (!countrySearchResults.length) {
+      return;
+    }
+
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        countrySearchActiveIndex = Math.min(
+          countrySearchActiveIndex + 1,
+          countrySearchResults.length - 1,
+        );
+        updateCountrySearchActiveOption();
+        break;
+
+      case "ArrowUp":
+        event.preventDefault();
+        countrySearchActiveIndex = Math.max(countrySearchActiveIndex - 1, 0);
+        updateCountrySearchActiveOption();
+        break;
+
+      case "Home":
+        event.preventDefault();
+        countrySearchActiveIndex = 0;
+        updateCountrySearchActiveOption();
+        break;
+
+      case "End":
+        event.preventDefault();
+        countrySearchActiveIndex = countrySearchResults.length - 1;
+        updateCountrySearchActiveOption();
+        break;
+
+      case "Enter":
+        event.preventDefault();
+        if (countrySearchResults[countrySearchActiveIndex]) {
+          selectCountry(countrySearchResults[countrySearchActiveIndex].code);
+        }
+        break;
+
+      default:
+        break;
+    }
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!elements.countrySearch?.contains(event.target)) {
+      closeCountrySearch();
+    }
+  });
+}
+
+export function initializeCountrySelector() {
+  if (!elements.countrySelect || !elements.countrySearchInput) {
+    throw new Error("Country search elements not found.");
+  }
+
+  elements.countrySelect.innerHTML = countries
+    .map(
+      (country) => `<option value="${country.code}">${country.name}</option>`,
+    )
+    .join("");
+
+  bindCountrySearchEvents();
+
+  selectCountry(elements.countrySelect.value || "IR", false);
+}
 
 export function getSelectedCountry() {
   return elements.countrySelect?.value || "IR";
@@ -415,7 +712,13 @@ export function setSelectedCountry(code) {
     return;
   }
 
-  elements.countrySelect.value = code;
+  const country = getCountryByCode(code);
+
+  if (!country) {
+    return;
+  }
+
+  selectCountry(country.code, false);
 }
 
 /* ==========================================================
@@ -432,23 +735,91 @@ export function closeLinkModal() {
   addClass(elements.linkModal, "hidden");
 }
 
+function getFaviconCandidates(url) {
+  try {
+    const parsed = new URL(url);
+    const hostname = parsed.hostname.trim();
+
+    if (!hostname || !hostname.includes(".")) {
+      return ["assets/favicon.png"];
+    }
+
+    // Avoid unnecessary favicon requests for raw IP-address hosts.
+    if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname)) {
+      return ["assets/favicon.png"];
+    }
+
+    return [
+      `${parsed.origin}/favicon.ico`,
+      `https://www.google.com/s2/favicons?domain=${encodeURIComponent(
+        hostname,
+      )}&sz=64`,
+      "assets/favicon.png",
+    ];
+  } catch {
+    return ["assets/favicon.png"];
+  }
+}
+
+function updateFaviconPreview(url) {
+  if (!elements.linkFaviconPreview || !elements.linkFaviconPreviewImage) {
+    return;
+  }
+
+  const value = url.trim();
+
+  if (!value) {
+    elements.linkFaviconPreview.classList.add("hidden");
+    elements.linkFaviconPreviewImage.src = "assets/favicon.png";
+    return;
+  }
+
+  const normalized = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+
+  let candidates = [];
+
+  try {
+    candidates = getFaviconCandidates(normalized);
+  } catch {
+    candidates = ["assets/favicon.png"];
+  }
+
+  let index = 0;
+
+  const tryNext = () => {
+    if (index >= candidates.length) {
+      elements.linkFaviconPreviewImage.src = "assets/favicon.png";
+      return;
+    }
+
+    elements.linkFaviconPreviewImage.src = candidates[index++];
+  };
+
+  elements.linkFaviconPreviewImage.onload = () => {
+    elements.linkFaviconPreview.classList.remove("hidden");
+  };
+
+  elements.linkFaviconPreviewImage.onerror = tryNext;
+
+  elements.linkFaviconPreview.classList.remove("hidden");
+  tryNext();
+}
+
 export function clearLinkForm() {
   elements.linkTitle.value = "";
-
   elements.linkUrl.value = "";
 
   const colors = QUICK_LINKS.COLORS;
-
   const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
   elements.linkColor.value = randomColor;
+  updateFaviconPreview("");
 
   /*
   Reset previous validation states
   when opening a fresh form.
   */
   showInputError("linkTitle", "linkTitleError", null);
-
   showInputError("linkUrl", "linkUrlError", null);
 }
 
@@ -526,11 +897,9 @@ export function toggleQuickLinks(enabled) {
     if (enabled) {
       link.classList.remove("disabled");
       link.removeAttribute("aria-disabled");
-      link.style.pointerEvents = "auto";
     } else {
       link.classList.add("disabled");
       link.setAttribute("aria-disabled", "true");
-      link.style.pointerEvents = "none";
     }
   });
 }
@@ -539,6 +908,29 @@ export function toggleQuickLinks(enabled) {
    Quick Links Renderer
 ========================================================== */
 
+function createFaviconElement(url, title) {
+  const image = document.createElement("img");
+
+  image.className = "quick-link__icon";
+  image.alt = "";
+  image.loading = "lazy";
+  image.decoding = "async";
+  image.title = `${title} favicon`;
+
+  const candidates = getFaviconCandidates(url);
+  let index = 0;
+
+  image.onerror = () => {
+    if (index < candidates.length) {
+      image.src = candidates[index++];
+    }
+  };
+
+  image.src = candidates[index++] || "assets/favicon.png";
+
+  return image;
+}
+
 export function renderQuickLinks(links) {
   if (!elements.quickLinksContainer) {
     return;
@@ -546,60 +938,60 @@ export function renderQuickLinks(links) {
 
   elements.quickLinksContainer.innerHTML = "";
 
+  if (!links.length) {
+    const empty = document.createElement("p");
+    empty.className = "quick-links__empty";
+    empty.textContent = "No quick links yet.";
+    elements.quickLinksContainer.appendChild(empty);
+    return;
+  }
+
   links.forEach((link) => {
     const wrapper = document.createElement("div");
 
     wrapper.className = "quick-link-wrapper";
-
     wrapper.dataset.id = String(link.id);
 
     enableQuickLinkDrag(wrapper);
 
     const button = document.createElement("a");
 
-    /*
-    Quick Links are locked until
-    IP validation succeeds.
-    */
     button.className = "btn quick-link";
-
     button.draggable = false;
+    button.href = link.url;
+    button.target = "_blank";
+    button.rel = "noopener noreferrer";
+    button.style.background = link.color;
 
     if (!quickLinksEnabled) {
       button.classList.add("disabled");
-
       button.setAttribute("aria-disabled", "true");
     }
 
-    button.href = link.url;
+    const content = document.createElement("span");
+    content.className = "quick-link__content";
 
-    button.target = "_blank";
+    content.append(createFaviconElement(link.url, link.title));
 
-    button.rel = "noopener noreferrer";
+    const title = document.createElement("span");
+    title.className = "quick-link__title";
+    title.textContent = link.title;
 
-    button.textContent = link.title;
-
-    button.style.background = link.color;
+    content.appendChild(title);
+    button.appendChild(content);
 
     const deleteButton = document.createElement("button");
-
-    /* 
-    Drag Events
-    */
     deleteButton.className = "quick-link-delete";
-
     deleteButton.type = "button";
-
     deleteButton.textContent = "×";
+    deleteButton.dataset.id = String(link.id);
+    deleteButton.setAttribute("aria-label", `Delete ${link.title}`);
 
-    deleteButton.dataset.id = link.id;
-
-    wrapper.appendChild(button);
-
-    wrapper.appendChild(deleteButton);
-
+    wrapper.append(button, deleteButton);
     elements.quickLinksContainer.appendChild(wrapper);
   });
+
+  toggleQuickLinks(quickLinksEnabled);
 }
 
 /* ==========================================================
@@ -774,6 +1166,7 @@ export function bindValidationInputEvents() {
 
   elements.linkUrl?.addEventListener("input", () => {
     showInputError("linkUrl", "linkUrlError", null);
+    updateFaviconPreview(elements.linkUrl.value.trim());
   });
 }
 
@@ -898,6 +1291,8 @@ export { elements };
 
 export default {
   initializeUI,
+
+  initializeCountrySelector,
 
   renderNetworkInfo,
 

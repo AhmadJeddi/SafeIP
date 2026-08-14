@@ -3,7 +3,7 @@
 SafeIP
 config.js
 Application Configuration
-Version: 1.1.1
+Version: 1.2.0
 ==========================================================
 */
 
@@ -14,7 +14,7 @@ Version: 1.1.1
 export const APP = Object.freeze({
   NAME: "SafeIP",
 
-  VERSION: "1.3.0",
+  VERSION: "1.4.0",
 
   DEFAULT_COUNTRY: "IR",
 });
@@ -134,6 +134,18 @@ export const UI = Object.freeze({
   DEFAULT_ISP: "Loading...",
 
   DEFAULT_LAST_CHECK: "Never",
+
+  UNAVAILABLE_COUNTRY: "Unavailable",
+
+  UNAVAILABLE_COUNTRY_CODE: "--",
+
+  UNAVAILABLE_REGION: "Unavailable",
+
+  UNAVAILABLE_CITY: "Unavailable",
+
+  UNAVAILABLE_TIMEZONE: "Unavailable",
+
+  UNAVAILABLE_ISP: "Unavailable",
 });
 
 /* ==========================================================

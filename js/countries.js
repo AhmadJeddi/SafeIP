@@ -3,7 +3,7 @@
 SafeIP
 countries.js
 countries list
-Version: 1.0.0
+Version: 1.1.0
 ==========================================================
 */
 
@@ -164,49 +164,4 @@ export function getCountryByCode(code) {
   return (
     countries.find((country) => country.code === code.toUpperCase()) || null
   );
-}
-
-/* ==========================================================
-   HTML Escape Helper
-========================================================== */
-
-function escapeHTML(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-
-    .replaceAll("<", "&lt;")
-
-    .replaceAll(">", "&gt;")
-
-    .replaceAll('"', "&quot;")
-
-    .replaceAll("'", "&#039;");
-}
-
-/* ==========================================================
-   Generate Select Options
-========================================================== */
-
-/**
- * Generate country select options
- *
- * @returns {string}
- */
-export function createCountryOptions() {
-  return countries
-
-    .map((country) => {
-      return `
-
-<option value="${escapeHTML(country.code)}">
-
-${escapeHTML(country.flag)}
-${escapeHTML(country.name)}
-
-</option>
-
-`;
-    })
-
-    .join("");
 }

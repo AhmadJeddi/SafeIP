@@ -3,7 +3,7 @@
 SafeIP
 style.css
 Main application styles
-Version: 1.2.1
+Version: 1.3.0
 ==========================================================
 */
 
@@ -235,10 +235,36 @@ p {
 }
 
 /* ==========================================================
-   Country Select
+   Country Search
 ========================================================== */
 
-#countrySelect {
+.country-search {
+  position: relative;
+
+  z-index: 1;
+}
+
+/* ==========================================================
+   Country Dropdown Stacking
+========================================================== */
+
+.country-card {
+  position: relative;
+
+  z-index: 20;
+}
+
+.country-card.is-country-open {
+  z-index: calc(var(--z-dropdown) + 20);
+}
+
+.country-card.is-country-open + .network-card {
+  pointer-events: none;
+
+  user-select: none;
+}
+
+.country-search__input {
   width: 100%;
 
   height: var(--select-height);
@@ -255,17 +281,127 @@ p {
 
   transition:
     border-color var(--transition-fast),
-    background var(--transition-fast);
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
-#countrySelect:hover {
+.country-search__input:hover {
   background: var(--bg-card-hover);
 }
 
-#countrySelect:focus {
+.country-search__input:focus {
   border-color: var(--border-focus);
 
   outline: none;
+
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.country-search__options {
+  position: absolute;
+
+  inset-inline: 0;
+
+  top: calc(100% + var(--space-2));
+
+  max-height: 320px;
+
+  overflow-y: auto;
+
+  padding: var(--space-1);
+
+  background: var(--bg-card);
+
+  border: 1px solid var(--border-color);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: var(--shadow-md);
+
+  backdrop-filter: blur(14px);
+
+  -webkit-backdrop-filter: blur(14px);
+
+  z-index: calc(var(--z-dropdown) + 30);
+}
+
+.country-search__option {
+  width: 100%;
+
+  min-height: 44px;
+
+  display: grid;
+
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+
+  align-items: center;
+
+  gap: var(--space-3);
+
+  padding: var(--space-2) var(--space-3);
+
+  background: transparent;
+
+  color: var(--text-primary);
+
+  border-radius: var(--radius-sm);
+
+  text-align: start;
+}
+
+.country-search__option:hover,
+.country-search__option.is-active {
+  background: var(--bg-card-hover);
+}
+
+.country-search__flag {
+  font-size: var(--font-size-md);
+
+  text-align: center;
+}
+
+.country-search__name {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.country-search__code {
+  color: var(--text-muted);
+
+  font-size: var(--font-size-sm);
+
+  font-weight: var(--font-weight-semibold);
+}
+
+.country-search__empty {
+  padding: var(--space-4);
+
+  color: var(--text-muted);
+
+  text-align: center;
+}
+
+.country-search__native {
+  position: absolute;
+
+  width: 1px;
+
+  height: 1px;
+
+  padding: 0;
+
+  margin: -1px;
+
+  overflow: hidden;
+
+  clip: rect(0, 0, 0, 0);
+
+  white-space: nowrap;
+
+  border: 0;
 }
 
 /* ==========================================================
@@ -401,21 +537,81 @@ p {
 }
 
 /* ==========================================================
+   Status Visual Patterns
+========================================================== */
+
+.status-card {
+  position: relative;
+
+  overflow: hidden;
+}
+
+.status-card::after {
+  content: "";
+
+  position: absolute;
+
+  inset: -40%;
+
+  pointer-events: none;
+
+  opacity: 0.22;
+
+  z-index: 0;
+
+  background-size: 28px 28px;
+
+  transform: rotate(-8deg);
+}
+
+.status-card > * {
+  position: relative;
+
+  z-index: 1;
+}
+
+.status-safe::after {
+  background-image: radial-gradient(
+    circle at center,
+    rgba(34, 197, 94, 0.24) 0 2px,
+    transparent 3px
+  );
+}
+
+.status-warning::after {
+  background-image: radial-gradient(
+    circle at center,
+    rgba(245, 158, 11, 0.22) 0 3px,
+    transparent 4px
+  );
+}
+
+.status-danger::after {
+  background-image: radial-gradient(
+    circle at center,
+    rgba(239, 68, 68, 0.2) 0 3px,
+    transparent 4px
+  );
+}
+
+/* ==========================================================
    Checklist
 ========================================================== */
 
 .checklist {
-  display: flex;
+  display: grid;
 
-  flex-direction: column;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 
-  gap: var(--space-3);
+  gap: var(--grid-gap);
 }
 
 .checklist li {
   display: flex;
 
   align-items: center;
+
+  justify-content: center;
 
   min-height: 42px;
 
@@ -512,6 +708,88 @@ p {
 
 .hidden {
   display: none !important;
+}
+
+/* ==========================================================
+   Initial Skeleton State
+========================================================== */
+
+body.app-loading .skeleton-text,
+body.app-loading .skeleton-circle,
+body.app-loading .skeleton-row {
+  visibility: visible;
+}
+
+/* ==========================================================
+   Skeleton Loading / Shimmer
+========================================================== */
+
+.skeleton-text {
+  display: inline-block;
+
+  min-width: 4rem;
+
+  min-height: 1.25em;
+
+  color: transparent !important;
+
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-highlight) 50%,
+    var(--skeleton-base) 75%
+  );
+
+  background-size: 200% 100%;
+
+  border-radius: var(--radius-sm);
+
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+
+  user-select: none;
+}
+
+.skeleton-circle {
+  color: transparent !important;
+
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-highlight) 50%,
+    var(--skeleton-base) 75%
+  ) !important;
+
+  background-size: 200% 100% !important;
+
+  border-color: transparent !important;
+
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-row {
+  color: transparent !important;
+
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-base) 25%,
+    var(--skeleton-highlight) 50%,
+    var(--skeleton-base) 75%
+  ) !important;
+
+  background-size: 200% 100% !important;
+
+  border-color: transparent !important;
+
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ==========================================================
@@ -683,11 +961,35 @@ p {
 .quick-links {
   display: grid;
 
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
 
   gap: var(--space-4);
 
+  max-height: 380px;
+
+  overflow-x: clip;
+
+  overflow-y: auto;
+
+  padding: var(--space-2);
+
+  margin: calc(var(--space-2) * -1);
+
   user-select: none;
+
+  overscroll-behavior: contain;
+
+  min-width: 0;
+}
+
+.quick-links__empty {
+  grid-column: 1 / -1;
+
+  padding: var(--space-6);
+
+  color: var(--text-muted);
+
+  text-align: center;
 }
 
 /* ==========================================================
@@ -697,9 +999,15 @@ p {
 .quick-link-wrapper {
   position: relative;
 
+  min-width: 0;
+
   cursor: grab;
 
-  touch-action: pinch-zoom;
+  touch-action: none;
+}
+
+.quick-link-wrapper:active {
+  cursor: grabbing;
 }
 
 /* ==========================================================
@@ -709,15 +1017,15 @@ p {
 .quick-link-delete {
   position: absolute;
 
-  top: -9px;
+  top: 0;
 
-  right: -9px;
+  right: 0;
 
   width: 24px;
 
   height: 24px;
 
-  border-radius: 50%;
+  border-radius: 0 var(--radius-md);
 
   border: none;
 
@@ -816,15 +1124,19 @@ p {
 ========================================================== */
 
 .quick-link {
-  display: inline-flex;
+  display: flex;
 
-  justify-content: center;
+  justify-content: flex-start;
 
   align-items: center;
 
-  height: var(--button-height);
-
   width: 100%;
+
+  min-height: 58px;
+
+  padding: var(--space-2) var(--space-3);
+
+  padding-right: calc(var(--space-3) + 26px);
 
   border-radius: var(--radius-md);
 
@@ -832,15 +1144,94 @@ p {
 
   font-weight: var(--font-weight-semibold);
 
+  text-align: start;
+
   transition:
     transform var(--transition-fast),
-    opacity var(--transition-fast);
+    opacity var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
-.quick-link:hover {
+.quick-link:hover .quick-link-wrapper {
   transform: translateY(-2px);
 
   opacity: 0.92;
+
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-link__content {
+  display: flex;
+
+  flex-direction: row;
+
+  align-items: center;
+
+  justify-content: flex-start;
+
+  gap: var(--space-3);
+
+  min-width: 0;
+
+  width: 100%;
+}
+
+.quick-link__icon {
+  width: 34px;
+
+  height: 34px;
+
+  padding: 3px;
+
+  object-fit: contain;
+
+  border-radius: var(--radius-sm);
+
+  background: rgba(255, 255, 255, 0.92);
+
+  flex-shrink: 0;
+}
+
+.quick-link__title {
+  min-width: 0;
+
+  flex: 1;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.favicon-preview {
+  display: flex;
+
+  align-items: center;
+
+  gap: var(--space-2);
+
+  margin-top: var(--space-2);
+
+  color: var(--text-muted);
+
+  font-size: var(--font-size-sm);
+}
+
+.favicon-preview img {
+  width: 20px;
+
+  height: 20px;
+
+  padding: 2px;
+
+  object-fit: contain;
+
+  border-radius: var(--radius-sm);
+
+  background: var(--bg-input);
+
+  border: 1px solid var(--border-color);
 }
 
 /* ==========================================================
@@ -956,7 +1347,8 @@ p {
     width: calc(100% - (var(--space-4) * 2));
   }
 
-  .info-grid {
+  .info-grid,
+  .checklist {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -995,8 +1387,6 @@ p {
   }
 
   .btn {
-    width: 100%;
-
     min-width: unset;
   }
 }
@@ -1014,7 +1404,8 @@ p {
     padding: var(--space-4);
   }
 
-  .info-grid {
+  .info-grid,
+  .checklist {
     grid-template-columns: 1fr;
   }
 
@@ -1040,8 +1431,8 @@ p {
     align-items: stretch;
   }
 
-  .modal__actions {
-    flex-direction: column;
+  .quick-links {
+    max-height: 320px;
   }
 }
 

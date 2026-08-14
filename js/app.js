@@ -3,13 +3,11 @@
 SafeIP
 app.js
 Application Entry Point
-Version: 1.4.0
+Version: 1.4.1
 ==========================================================
 */
 
 import { initTheme, toggleTheme } from "./theme.js";
-
-import { createCountryOptions } from "./countries.js";
 
 import { getNetworkInfo } from "./api.js";
 
@@ -19,6 +17,7 @@ import { validateQuickLink, isDuplicateURL } from "./quick-links-validator.js";
 
 import {
   initializeUI,
+  initializeCountrySelector,
   renderNetworkInfo,
   renderStatus,
   renderChecklist,
@@ -75,20 +74,6 @@ const state = {
 
   quickLinks: [],
 };
-
-/* ==========================================================
-   Countries
-========================================================== */
-
-function loadCountries() {
-  const select = document.getElementById("countrySelect");
-
-  if (!select) {
-    throw new Error("Country selector not found.");
-  }
-
-  select.innerHTML = createCountryOptions();
-}
 
 /* ==========================================================
    Restore Country
@@ -409,7 +394,7 @@ async function initialize() {
 
   initializeUI();
 
-  loadCountries();
+  initializeCountrySelector();
 
   restoreCountry();
 

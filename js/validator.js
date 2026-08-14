@@ -3,7 +3,7 @@
 SafeIP
 validator.js
 Security Validation Engine
-Version: 1.0.0
+Version: 1.1.0
 ==========================================================
 */
 
@@ -34,12 +34,11 @@ function validateInternet(networkData) {
 ========================================================== */
 
 function validateAPI(networkData) {
-  return Boolean(
-    networkData &&
-    networkData.ip &&
-    networkData.country &&
-    networkData.countryCode,
-  );
+  return Boolean(networkData && networkData.ip);
+}
+
+function hasLocationData(networkData) {
+  return Boolean(networkData && networkData.country && networkData.countryCode);
 }
 
 /* ==========================================================
@@ -67,11 +66,9 @@ function createResult({ safe, level, score, title, message, checks }) {
 ========================================================== */
 
 export function validateNetwork(selectedCountry, networkData) {
-  /*
-  ==========================
-  Internet Check
-  ==========================
-  */
+  /* ========================================================
+     Internet Check
+  ======================================================== */
 
   const internet = validateInternet(networkData);
 
@@ -99,11 +96,9 @@ export function validateNetwork(selectedCountry, networkData) {
     });
   }
 
-  /*
-  ==========================
-  API Check
-  ==========================
-  */
+  /* ========================================================
+     API Check
+  ======================================================== */
 
   const api = validateAPI(networkData);
 
@@ -131,11 +126,38 @@ export function validateNetwork(selectedCountry, networkData) {
     });
   }
 
-  /*
-  ==========================
-  Country Check
-  ==========================
-  */
+  /* ========================================================
+     Location Check
+  ======================================================== */
+
+  if (!hasLocationData(networkData)) {
+    return createResult({
+      safe: false,
+
+      level: SECURITY_LEVEL.WARNING,
+
+      score: SCORE.WARNING,
+
+      title: "Location Unavailable",
+
+      message:
+        "Your IP address was detected, but complete location information is unavailable.",
+
+      checks: {
+        internet: true,
+
+        api: true,
+
+        country: false,
+
+        login: false,
+      },
+    });
+  }
+
+  /* ========================================================
+     Country Check
+  ======================================================== */
 
   const country = validateCountry(
     selectedCountry,
@@ -167,11 +189,9 @@ export function validateNetwork(selectedCountry, networkData) {
     });
   }
 
-  /*
-  ==========================
-  Safe Result
-  ==========================
-  */
+  /* ========================================================
+     Safe Result
+  ======================================================== */
 
   return createResult({
     safe: true,
@@ -201,30 +221,18 @@ export function validateNetwork(selectedCountry, networkData) {
    Helper Functions
 ========================================================== */
 
-/**
- * Check if network is safe
- */
 export function isSafe(result) {
   return Boolean(result && result.level === SECURITY_LEVEL.SAFE);
 }
 
-/**
- * Can user login?
- */
 export function canLogin(result) {
   return Boolean(result && result.safe);
 }
 
-/**
- * Warning state
- */
 export function isWarning(result) {
   return Boolean(result && result.level === SECURITY_LEVEL.WARNING);
 }
 
-/**
- * Danger state
- */
 export function isDanger(result) {
   return Boolean(result && result.level === SECURITY_LEVEL.DANGER);
 }

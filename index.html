@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
 
-  <body>
+  <body class="app-loading">
     <header class="header">
       <div class="container">
         <div class="header__brand">
@@ -58,60 +58,87 @@
     <main class="container">
       <!-- ================= COUNTRY ================= -->
 
-      <article class="card">
+      <article id="countryCard" class="card country-card">
         <h2 class="card__title">Selected Country</h2>
 
-        <label for="countrySelect"> Country </label>
+        <label for="countrySearchInput">Country</label>
 
-        <select id="countrySelect" aria-label="Country"></select>
+        <div id="countrySearch" class="country-search">
+          <input
+            id="countrySearchInput"
+            class="country-search__input"
+            type="text"
+            autocomplete="off"
+            placeholder="Search country..."
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="countryOptions"
+            aria-haspopup="listbox"
+          />
+
+          <div
+            id="countryOptions"
+            class="country-search__options hidden"
+            role="listbox"
+            aria-label="Countries"
+          ></div>
+
+          <select
+            id="countrySelect"
+            class="country-search__native"
+            aria-hidden="true"
+            tabindex="-1"
+          ></select>
+        </div>
       </article>
 
       <!-- ================= NETWORK ================= -->
 
-      <article class="card">
+      <article id="networkCard" class="card network-card" aria-busy="false">
         <h2 class="card__title">Current Network</h2>
 
         <div class="info-grid">
           <div class="info-item">
             <span>IP Address</span>
 
-            <strong id="ipAddress"> Loading... </strong>
+            <strong id="ipAddress" class="skeleton-text"> Loading... </strong>
           </div>
 
           <div class="info-item">
             <span>Country</span>
 
-            <strong id="countryName"> Loading... </strong>
+            <strong id="countryName" class="skeleton-text"> Loading... </strong>
           </div>
 
           <div class="info-item">
             <span>Country Code</span>
 
-            <strong id="countryCode"> -- </strong>
+            <strong id="countryCode" class="skeleton-text"> -- </strong>
           </div>
 
           <div class="info-item">
             <span>Region</span>
 
-            <strong id="regionName"> Loading... </strong>
+            <strong id="regionName" class="skeleton-text"> Loading... </strong>
           </div>
 
           <div class="info-item">
             <span>City</span>
 
-            <strong id="cityName"> Loading... </strong>
+            <strong id="cityName" class="skeleton-text"> Loading... </strong>
           </div>
 
           <div class="info-item">
             <span>Timezone</span>
 
-            <strong id="timezone"> Loading... </strong>
+            <strong id="timezone" class="skeleton-text"> Loading... </strong>
           </div>
 
           <div class="info-item">
             <span>ISP</span>
 
-            <strong id="ispName"> Loading... </strong>
+            <strong id="ispName" class="skeleton-text"> Loading... </strong>
           </div>
         </div>
       </article>
@@ -127,38 +154,42 @@
         <h2 class="card__title">Security Status</h2>
 
         <div class="status">
-          <div id="statusIcon" class="status__icon">🟡</div>
+          <div id="statusIcon" class="status__icon skeleton-circle">🟡</div>
 
           <div>
-            <h3 id="statusTitle">Checking...</h3>
+            <h3 id="statusTitle" class="skeleton-text">Checking...</h3>
 
-            <p id="statusMessage">Checking your current network...</p>
+            <p id="statusMessage" class="skeleton-text">
+              Checking your current network...
+            </p>
           </div>
         </div>
       </article>
 
       <!-- ================= CHECKLIST ================= -->
 
-      <article class="card">
+      <article id="checklistCard" class="card" aria-busy="false">
         <h2 class="card__title">Security Checklist</h2>
 
         <ul class="checklist">
-          <li id="checkCountry">⏳ Country Match</li>
+          <li id="checkCountry" class="skeleton-row">⏳ Country Match</li>
 
-          <li id="checkConnection">⏳ Internet Connection</li>
+          <li id="checkConnection" class="skeleton-row">
+            ⏳ Internet Connection
+          </li>
 
-          <li id="checkApi">⏳ API Response</li>
+          <li id="checkApi" class="skeleton-row">⏳ API Response</li>
 
-          <li id="checkLogin">⏳ Safe Login</li>
+          <li id="checkLogin" class="skeleton-row">⏳ Safe Login</li>
         </ul>
       </article>
 
       <!-- ================= LAST CHECK ================= -->
 
-      <article class="card">
+      <article id="lastCheckCard" class="card">
         <h2 class="card__title">Last Check</h2>
 
-        <p id="lastChecked">Never</p>
+        <p id="lastChecked" class="skeleton-text">Never</p>
       </article>
 
       <!-- ================= ALERT ================= -->
@@ -248,6 +279,19 @@
 
         <p id="linkUrlError" class="input-error"></p>
 
+        <div
+          id="linkFaviconPreview"
+          class="favicon-preview hidden"
+          aria-live="polite"
+        >
+          <img
+            id="linkFaviconPreviewImage"
+            src="assets/favicon.png"
+            alt="favicon"
+          />
+          <span>Favicon preview</span>
+        </div>
+
         <label for="linkColor"> Color </label>
 
         <input id="linkColor" type="color" value="#2563eb" />
@@ -267,7 +311,7 @@
     <footer class="footer">
       <div class="container">
         <small>
-          SafeIP v1.3.0 · Developed by
+          SafeIP v1.4.0 · Developed by
           <a
             href="https://github.com/AhmadJeddi/SafeIP"
             target="_blank"
