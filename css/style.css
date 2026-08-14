@@ -1152,12 +1152,16 @@ body.app-loading .skeleton-row {
     box-shadow var(--transition-fast);
 }
 
-.quick-link:hover .quick-link-wrapper {
+.quick-link:hover {
   transform: translateY(-2px);
 
   opacity: 0.92;
 
   box-shadow: var(--shadow-sm);
+}
+
+.quick-link:hover + .quick-link-delete {
+  transform: translateY(-2px);
 }
 
 .quick-link__content {
