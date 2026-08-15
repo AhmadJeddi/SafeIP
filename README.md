@@ -3,7 +3,7 @@
 [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)](https://developer.mozilla.org/docs/Web/HTML)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)](https://developer.mozilla.org/docs/Web/CSS)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript)
-[![Version](https://img.shields.io/badge/Version-1.4.0-blue.svg?style=flat-square)](https://github.com/AhmadJeddi/SafeIP/releases/tag/v1.4.0)
+[![Version](https://img.shields.io/badge/Version-1.5.0-blue.svg?style=flat-square)](https://github.com/AhmadJeddi/SafeIP/releases/tag/v1.5.0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Live-Demo-22c55e?style=flat-square&logoColor=white)](https://ahmadjeddi.github.io/SafeIP/)
 
@@ -15,63 +15,63 @@ SafeIP is a lightweight web application that compares your detected IP location 
 
 ## ✨ Features
 
-- 🌍 Detect current IP address
-- 📍 Detect IP-based network location
-- 🔎 Searchable country selector with keyboard navigation
-- 🏳️ Display country flags, names, and country codes
-- 💾 Persist selected country using LocalStorage
-- 🔍 Compare detected country with selected country
-- ✅ Show network safety status
-- 🔒 Protect configured Quick Links based on validation result
-- 📋 Copy current IP address
-- 🔄 Refresh network information
-- 💾 Persist settings and Quick Links using LocalStorage
-- 📤 Export and Import settings
-- 🌙 Dark / Light theme support
-- 💀 Skeleton / Shimmer loading for network and security information
-- 🌐 Automatic Quick Link favicon detection with fallback support
-- 👁️ Favicon preview when creating Quick Links
-- 🧩 Responsive Quick Links cards with independent scrolling
-- 🖱️ Drag & drop Quick Link reordering
-- 📱 Touch-friendly Quick Link interactions
-- 🟢🟡🔴 Subtle visual patterns for network status states
-- ⚠️ Client-side validation with user-friendly error messages
+### 🌍 Network Security
+
+- Detect public IP address and IP-based network information
+- Compare detected and expected countries
+- Display network security status
+- Protect configured Quick Links based on validation results
+- Copy and refresh current network information
+
+### 🔎 Country Selection
+
+- Searchable country selector
+- Keyboard navigation
+- Country flag, name, and ISO code display
+- Persist selected country using LocalStorage
+
+### 🔗 Quick Links
+
+- Create and manage custom links
+- Automatic favicon detection with fallback support
+- Favicon preview when adding links
+- Custom link colors
+- Drag & drop reordering
+- Touch-friendly interactions
+- Responsive card layout with independent scrolling
+- Client-side validation and duplicate URL detection
+
+### 🎨 User Experience
+
+- Dark / Light theme support
+- Skeleton / Shimmer loading states
+- Responsive design
+- Subtle Safe / Warning / Danger visual patterns
+- User-friendly validation feedback
+
+### ⭐ PWA
+
+- Installable on supported browsers and devices
+- Standalone app display
+- Service Worker support
+- Static asset caching
+- Offline application shell
+- Offline state feedback
+- PWA icons and manifest metadata
+- Manual installation prompt when supported
 
 ---
 
 ## 🔐 Network Security Validation
 
-SafeIP performs multiple security checks:
+SafeIP performs multiple checks before enabling protected Quick Links:
 
-- ✅ Internet availability check
-- ✅ API response validation
-- ✅ Country location verification
-- ✅ Protected link access control
+- ✅ Internet availability
+- ✅ API response validity
+- ✅ Country location match
+- ✅ Protected link access
 
-The Quick Links section remains locked until the network passes the required security validation.
-
----
-
-## 🔗 Quick Links
-
-SafeIP includes a protected quick link manager for frequently used websites.
-
-Features:
-
-- Create custom links
-- Automatic website favicon detection
-- Favicon preview when adding a new link
-- Assign custom colors
-- Save links locally
-- Delete links
-- Drag & drop ordering
-- Touch-friendly drag support for mobile devices
-- Responsive card-based layout
-- Independent scrolling when multiple links are added
-- Disable links when the network is unsafe
-- Enable links after successful validation
-- Client-side link validation
-- Duplicate URL detection
+If required network information is unavailable, SafeIP reports the missing information instead of treating the network as unsafe.
 
 ---
 
@@ -95,7 +95,7 @@ Country comparison is performed
 Security status is determined
             |
             ↓
-Quick links access is updated
+Quick Links access is updated
             |
             ↓
 Security status is displayed
@@ -105,8 +105,6 @@ Security status is displayed
 
 ## 🖥️ Preview
 
-The demo below showcases the three possible network states:
-
 <p align="center">
   <img src="assets/preview.gif" alt="SafeIP Demo" width="90%">
 </p>
@@ -115,9 +113,7 @@ The demo below showcases the three possible network states:
 
 The detected IP country matches the selected country.
 
-Example:
-
-```
+```text
 Selected Country: Iran
 Detected Country: Iran
 
@@ -129,12 +125,10 @@ Safe Network
 
 ### 🟡 Warning
 
-The network information is incomplete or unavailable.
+Required network information is incomplete or unavailable.
 
-Example:
-
-```
-Network information service temporarily unavailable
+```text
+Network information is unavailable
 ```
 
 ---
@@ -143,9 +137,7 @@ Network information service temporarily unavailable
 
 The detected country does not match the selected country.
 
-Example:
-
-```
+```text
 Selected Country: Iran
 Detected Country: Germany
 
@@ -157,29 +149,36 @@ Unsafe Network
 
 ## 🏗️ Project Structure
 
-```
+```text
 SafeIP/
-├── index.html                   # Main application page
+├── index.html
+├── manifest.webmanifest
+├── service-worker.js
 │
 ├── assets/
-│   ├── favicon.png              # Application Favicon
-│   └── preview.gif              # Project demo animation
+│   ├── favicon.png
+│   ├── icon-192.png
+│   ├── icon-512.png
+│   ├── icon-192-maskable.png
+│   ├── icon-512-maskable.png
+│   └── preview.gif
 │
 ├── css/
-│   ├── reset.css                # Browser style normalization
-│   ├── variables.css            # Global design variables
-│   └── style.css                # Application styling
+│   ├── reset.css
+│   ├── variables.css
+│   └── style.css
 │
 ├── js/
-│   ├── app.js                   # Application entry point
-│   ├── api.js                   # Network information service
-│   ├── storage.js               # LocalStorage management
-│   ├── ui.js                    # User interface controller
-│   ├── theme.js                 # Theme switching logic
-│   ├── validator.js             # Security validation logic
-│   ├── countries.js             # Country database
-│   ├── quick-links-validator.js # Quick links validation
-│   └── config.js                # Application configuration
+│   ├── app.js
+│   ├── api.js
+│   ├── storage.js
+│   ├── ui.js
+│   ├── theme.js
+│   ├── pwa.js
+│   ├── validator.js
+│   ├── countries.js
+│   ├── quick-links-validator.js
+│   └── config.js
 │
 ├── README.md
 ├── project_structure.md
@@ -196,13 +195,18 @@ SafeIP/
 - Fetch API
 - LocalStorage API
 - Public IP Geolocation APIs
-- CSS Variables based theme system
+- CSS Variables
+- CSS Animations
+- Web App Manifest
+- Service Worker API
+- Cache API
+- PWA browser APIs
 
 ---
 
 ## 🔌 API Services
 
-SafeIP uses multiple IP services with fallback support.
+SafeIP uses public IP and geolocation services with fallback support.
 
 Current providers:
 
@@ -210,7 +214,7 @@ Current providers:
 - IPWho (Fallback)
 - IPify (Last fallback)
 
-If one service fails, the application automatically tries another available service.
+If a service fails or does not provide sufficient network information, SafeIP attempts to use an available fallback service.
 
 ---
 
@@ -223,21 +227,26 @@ git clone https://github.com/AhmadJeddi/SafeIP.git
 cd SafeIP
 ```
 
-Run the project using any local web server (e.g. VS Code Live Server).
+Run the project using a local web server such as VS Code Live Server.
+
+For PWA installation, serve SafeIP through HTTPS or a supported secure development environment such as localhost.
 
 ---
 
 ## 🔒 Privacy & Security
 
-SafeIP itself does **not**:
+SafeIP does not intentionally persist your IP address in LocalStorage or other application storage.
 
-- Store your IP address
+SafeIP does not:
+
 - Collect personal information
 - Require account registration
 - Use cookies
+- Intentionally store your IP address persistently
 
-Network information is retrieved directly from public IP geolocation services.
-User preferences are stored locally in your browser using LocalStorage.
+Network information is retrieved from public IP geolocation services and used locally for security validation.
+
+User preferences and Quick Links are stored locally in the browser using LocalStorage.
 
 ---
 

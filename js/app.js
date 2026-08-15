@@ -3,7 +3,7 @@
 SafeIP
 app.js
 Application Entry Point
-Version: 1.4.1
+Version: 1.5.0
 ==========================================================
 */
 
@@ -46,6 +46,9 @@ import {
   onThemeToggle,
   onExportSettings,
   onImportSettings,
+  renderOfflineState,
+  renderOnlineState,
+  onNetworkStatusChange,
 } from "./ui.js";
 
 import {
@@ -60,6 +63,8 @@ import {
 } from "./storage.js";
 
 import { APP } from "./config.js";
+
+import { registerServiceWorker, initializePWA } from "./pwa.js";
 
 /* ==========================================================
    Application State
@@ -317,7 +322,11 @@ async function refreshNetwork() {
   } catch (error) {
     console.error("Network refresh failed:", error);
 
-    renderError(error.message || "Unable to retrieve network information.");
+    if (!navigator.onLine) {
+      renderOfflineState();
+    } else {
+      renderError(error.message || "Unable to retrieve network information.");
+    }
   } finally {
     stopLoadingState();
   }
@@ -383,6 +392,14 @@ function bindEvents() {
   onExportSettings(handleExportSettings);
 
   onImportSettings(handleImportSettings);
+
+  onNetworkStatusChange((online) => {
+    if (online) {
+      renderOnlineState();
+    } else {
+      renderOfflineState();
+    }
+  });
 }
 
 /* ==========================================================
@@ -391,6 +408,8 @@ function bindEvents() {
 
 async function initialize() {
   initTheme();
+
+  initializePWA();
 
   initializeUI();
 
@@ -408,6 +427,8 @@ async function initialize() {
 ========================================================== */
 
 async function start() {
+  registerServiceWorker();
+
   try {
     bindEvents();
 

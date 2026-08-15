@@ -13,6 +13,13 @@
     <title>SafeIP</title>
 
     <link type="image/png" sizes="96x96" rel="icon" href="assets/favicon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="application-name" content="SafeIP" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="SafeIP" />
+    <link rel="apple-touch-icon" href="assets/icon-192.png" />
 
     <!-- ================= Early Theme Initialization ================= -->
 
@@ -196,6 +203,16 @@
 
       <div id="alertBox" class="alert hidden" role="alert"></div>
 
+      <div
+        id="offlineBanner"
+        class="offline-banner hidden"
+        role="status"
+        aria-live="polite"
+      >
+        You are offline. SafeIP is available, but live network checks require an
+        internet connection.
+      </div>
+
       <!-- ================= LOADER ================= -->
 
       <div id="loader" class="loader hidden"></div>
@@ -209,6 +226,14 @@
 
         <button id="copyButton" class="btn btn-success" type="button">
           Copy IP
+        </button>
+
+        <button
+          id="installAppButton"
+          class="btn btn-install hidden"
+          type="button"
+        >
+          Install SafeIP
         </button>
 
         <button
@@ -311,7 +336,7 @@
     <footer class="footer">
       <div class="container">
         <small>
-          SafeIP v1.4.0 · Developed by
+          SafeIP v1.5.0 · Developed by
           <a
             href="https://github.com/AhmadJeddi/SafeIP"
             target="_blank"

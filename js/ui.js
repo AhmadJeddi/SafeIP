@@ -3,7 +3,7 @@
 SafeIP
 ui.js
 UI Layer
-Version: 1.5.0
+Version: 1.6.0
 ==========================================================
 */
 
@@ -51,6 +51,8 @@ const elements = {
   ispName: document.getElementById("ispName"),
 
   timezone: document.getElementById("timezone"),
+
+  offlineBanner: document.getElementById("offlineBanner"),
 
   statusCard: document.getElementById("statusCard"),
 
@@ -1250,6 +1252,36 @@ export function onImportSettings(callback) {
 }
 
 /* ==========================================================
+   Network Availability State
+========================================================== */
+
+export function renderOfflineState() {
+  elements.offlineBanner?.classList.remove("hidden");
+
+  replaceStatusClass("status-warning");
+
+  setText(elements.statusIcon, ICONS.WARNING);
+
+  setText(elements.statusTitle, "Offline");
+
+  setText(
+    elements.statusMessage,
+    "SafeIP is available offline, but live network checks require an internet connection.",
+  );
+
+  toggleQuickLinks(false);
+}
+
+export function renderOnlineState() {
+  elements.offlineBanner?.classList.add("hidden");
+}
+
+export function onNetworkStatusChange(callback) {
+  window.addEventListener("online", () => callback(true));
+  window.addEventListener("offline", () => callback(false));
+}
+
+/* ==========================================================
    Initialize
 ========================================================== */
 
@@ -1351,4 +1383,7 @@ export default {
   onExportSettings,
 
   onImportSettings,
+  renderOfflineState,
+  renderOnlineState,
+  onNetworkStatusChange,
 };

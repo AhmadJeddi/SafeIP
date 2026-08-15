@@ -26,6 +26,9 @@ Version: 1.2.0
 
   --color-info: #0284c7;
 
+  --color-install: #eab308;
+  --color-install-hover: #ca8a04;
+
   /* ======================================================
       Background
    ====================================================== */
@@ -223,6 +226,10 @@ Version: 1.2.0
   --text-muted: #94a3b8;
 
   --text-disabled: #64748b;
+
+  --color-install: #facc15;
+
+  --color-install-hover: #eab308;
 
   --border-color: rgba(148, 163, 184, 0.25);
 
