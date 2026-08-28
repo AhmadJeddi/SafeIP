@@ -3,7 +3,7 @@
 SafeIP
 app.js
 Application Entry Point
-Version: 1.5.0
+Version: 1.5.1
 ==========================================================
 */
 
@@ -64,6 +64,8 @@ import {
 
 import { APP } from "./config.js";
 
+import { getCountryByCode } from "./countries.js";
+
 import { registerServiceWorker, initializePWA } from "./pwa.js";
 
 /* ==========================================================
@@ -87,9 +89,14 @@ const state = {
 function restoreCountry() {
   const savedCountry = loadSelectedCountry();
 
-  state.selectedCountry = savedCountry || APP.DEFAULT_COUNTRY;
+  const validCountry =
+    typeof savedCountry === "string" && getCountryByCode(savedCountry)
+      ? savedCountry.toUpperCase()
+      : APP.DEFAULT_COUNTRY;
 
-  setSelectedCountry(state.selectedCountry);
+  state.selectedCountry = validCountry;
+
+  setSelectedCountry(validCountry);
 }
 
 /* ==========================================================
@@ -292,9 +299,11 @@ function handleImportSettings(file) {
   };
 
   reader.onerror = () => {
-    console.error("Unable to read settings file.");
+    console.error("Settings file could not be read.");
 
-    window.alert("Unable to read the selected file.");
+    window.alert(
+      "SafeIP could not read the selected file. Please try another file.",
+    );
   };
 
   reader.readAsText(file);

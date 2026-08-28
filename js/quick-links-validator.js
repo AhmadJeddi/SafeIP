@@ -3,7 +3,7 @@
 SafeIP
 quick-links-validator.js
 Quick Links Validation
-Version: 1.0.0
+Version: 1.0.1
 ==========================================================
 */
 
@@ -23,7 +23,7 @@ export function normalizeURL(url) {
   let normalized = url.trim();
 
   /*
-  Reject dangerous protocols
+  Preserve explicit protocols for validation
   */
 
   if (

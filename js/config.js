@@ -3,7 +3,7 @@
 SafeIP
 config.js
 Application Configuration
-Version: 1.2.0
+Version: 1.2.1
 ==========================================================
 */
 
@@ -24,10 +24,6 @@ export const APP = Object.freeze({
 ========================================================== */
 
 export const API = Object.freeze({
-  PRIMARY_URL: "https://ipwho.is/",
-
-  FALLBACK_URL: "https://ipapi.is/",
-
   TIMEOUT: 8000,
 
   CACHE: "no-store",
