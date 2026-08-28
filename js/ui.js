@@ -1383,7 +1383,10 @@ export default {
   onExportSettings,
 
   onImportSettings,
+
   renderOfflineState,
+
   renderOnlineState,
+  
   onNetworkStatusChange,
 };

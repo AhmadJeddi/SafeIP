@@ -418,7 +418,7 @@ function bindEvents() {
 async function initialize() {
   initTheme();
 
-  initializePWA();
+  await initializePWA();
 
   initializeUI();
 

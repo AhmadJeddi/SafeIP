@@ -3,11 +3,11 @@
 SafeIP
 storage.js
 Local Storage Manager
-Version: 1.2.0
+Version: 1.2.1
 ==========================================================
 */
 
-import { STORAGE } from "./config.js";
+import { APP, STORAGE } from "./config.js";
 
 /* ==========================================================
    Export Storage Keys
@@ -323,12 +323,9 @@ export function exportStorage() {
     });
 
     return {
-      app: "SafeIP",
-
-      version: "1.3.0",
-
+      app: APP.NAME,
+      version: APP.VERSION,
       exportedAt: new Date().toISOString(),
-
       storage,
     };
   } catch (error) {

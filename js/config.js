@@ -14,7 +14,7 @@ Version: 1.2.1
 export const APP = Object.freeze({
   NAME: "SafeIP",
 
-  VERSION: "1.5.0",
+  VERSION: "1.5.1",
 
   DEFAULT_COUNTRY: "IR",
 });

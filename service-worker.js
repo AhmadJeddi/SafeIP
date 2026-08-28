@@ -7,7 +7,7 @@ Version: 1.0.0
 ==========================================================
 */
 
-const CACHE_NAME = "safeip-v1.5.0";
+const CACHE_NAME = "safeip-v1.5.1";
 
 const APP_SHELL = [
   "./",

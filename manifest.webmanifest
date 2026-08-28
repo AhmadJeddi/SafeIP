@@ -9,6 +9,15 @@
   "background_color": "#0f172a",
   "theme_color": "#2563eb",
   "prefer_related_applications": false,
+
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "./manifest.webmanifest",
+      "id": "./"
+    }
+  ],
+
   "icons": [
     {
       "src": "assets/icon-192.png",

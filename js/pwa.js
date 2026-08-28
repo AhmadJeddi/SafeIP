@@ -3,11 +3,12 @@
 SafeIP
 pwa.js
 PWA Registration and Installation
-Version: 1.0.0
+Version: 1.1.0
 ==========================================================
 */
 
 let deferredInstallPrompt = null;
+let appInstalled = false;
 
 function getInstallButton() {
   return document.getElementById("installAppButton");
@@ -20,14 +21,52 @@ function isStandalone() {
   );
 }
 
-function updateInstallButtonVisibility() {
+/*
+ * Check whether SafeIP is already installed.
+ *
+ * display-mode detects when the current page is running
+ * as a standalone PWA.
+ *
+ * getInstalledRelatedApps() detects an installed SafeIP PWA
+ * even when this page is opened in the browser.
+ */
+async function isAppInstalled() {
+  if (isStandalone()) {
+    return true;
+  }
+
+  if (typeof navigator.getInstalledRelatedApps !== "function") {
+    return false;
+  }
+
+  try {
+    const relatedApps = await navigator.getInstalledRelatedApps();
+
+    return relatedApps.some((app) => app.platform === "webapp");
+  } catch (error) {
+    console.warn("Unable to detect installed PWA:", error);
+    return false;
+  }
+}
+
+function hideInstallButton() {
   const button = getInstallButton();
 
-  if (!button || isStandalone()) {
+  if (!button) {
     return;
   }
 
-  button.classList.toggle("hidden", !deferredInstallPrompt);
+  button.classList.add("hidden");
+}
+
+function showInstallButton() {
+  const button = getInstallButton();
+
+  if (!button || appInstalled || isStandalone()) {
+    return;
+  }
+
+  button.classList.remove("hidden");
 }
 
 export function registerServiceWorker() {
@@ -47,21 +86,38 @@ export function registerServiceWorker() {
   });
 }
 
-export function initializePWA() {
+export async function initializePWA() {
   const button = getInstallButton();
 
   if (!button) {
     return;
   }
 
-  button.classList.add("hidden");
+  hideInstallButton();
 
+  /*
+   * Capture the browser install prompt so it can be
+   * triggered later from the custom Install button.
+   */
   window.addEventListener("beforeinstallprompt", (event) => {
+    if (appInstalled || isStandalone()) {
+      return;
+    }
+
     event.preventDefault();
 
     deferredInstallPrompt = event;
+    showInstallButton();
+  });
 
-    updateInstallButtonVisibility();
+  /*
+   * The application has just been installed.
+   * No install prompt should be offered anymore.
+   */
+  window.addEventListener("appinstalled", () => {
+    appInstalled = true;
+    deferredInstallPrompt = null;
+    hideInstallButton();
   });
 
   button.addEventListener("click", async () => {
@@ -72,7 +128,7 @@ export function initializePWA() {
     const promptEvent = deferredInstallPrompt;
 
     deferredInstallPrompt = null;
-    updateInstallButtonVisibility();
+    hideInstallButton();
 
     try {
       await promptEvent.prompt();
@@ -81,10 +137,13 @@ export function initializePWA() {
     }
   });
 
-  window.addEventListener("appinstalled", () => {
-    deferredInstallPrompt = null;
-    button.classList.add("hidden");
-  });
+  /*
+   * Check the real installation state when the web page
+   * is opened in the browser.
+   */
+  appInstalled = await isAppInstalled();
 
-  updateInstallButtonVisibility();
+  if (appInstalled) {
+    hideInstallButton();
+  }
 }
