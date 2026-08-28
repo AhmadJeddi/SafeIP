@@ -1,0 +1,29 @@
+{
+  "name": "safeip",
+  "version": "1.5.1",
+  "description": "SafeIP - Verify your network location before accessing sensitive online services.",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AhmadJeddi/SafeIP.git"
+  },
+  "keywords": [
+    "safeip",
+    "network-security",
+    "ip-checker",
+    "pwa"
+  ],
+  "author": "Ahmad JeddiZahed",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/AhmadJeddi/SafeIP/issues"
+  },
+  "homepage": "https://github.com/AhmadJeddi/SafeIP#readme",
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "html-minifier-terser": "^7.2.0"
+  }
+}
