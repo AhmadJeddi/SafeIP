@@ -3,22 +3,33 @@
 SafeIP
 validator.js
 Security Validation Engine
-Version: 1.1.0
+Version: 1.1.1
 ==========================================================
 */
 
 import { SECURITY_LEVEL, SCORE } from "./config.js";
+import { getCountryByCode } from "./countries.js";
 
 /* ==========================================================
    Country Validation
 ========================================================== */
 
 function validateCountry(selectedCountry, detectedCountry) {
-  if (!selectedCountry || !detectedCountry) {
+  if (
+    typeof selectedCountry !== "string" ||
+    typeof detectedCountry !== "string"
+  ) {
     return false;
   }
 
-  return selectedCountry.toUpperCase() === detectedCountry.toUpperCase();
+  const normalizedSelectedCountry = selectedCountry.toUpperCase();
+  const normalizedDetectedCountry = detectedCountry.toUpperCase();
+
+  if (!getCountryByCode(normalizedSelectedCountry)) {
+    return false;
+  }
+
+  return normalizedSelectedCountry === normalizedDetectedCountry;
 }
 
 /* ==========================================================
