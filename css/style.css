@@ -3,7 +3,7 @@
 SafeIP
 style.css
 Main application styles
-Version: 1.4.0
+Version: 1.4.1
 ==========================================================
 */
 
@@ -78,25 +78,11 @@ body {
 }
 
 .header__logo {
-  display: grid;
-
-  place-items: center;
-
   width: 56px;
 
   height: 56px;
 
-  border-radius: var(--radius-full);
-
-  background: linear-gradient(135deg, var(--color-primary), var(--color-info));
-
-  color: white;
-
-  font-size: 30px;
-
-  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.35);
-
-  backdrop-filter: blur(10px);
+  filter: drop-shadow(0 8px 20px rgba(0, 170, 249, 0.35));
 }
 
 .header__brand h1 {

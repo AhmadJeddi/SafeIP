@@ -3,7 +3,7 @@
 SafeIP
 theme.js
 Dark / Light Theme Manager
-Version: 1.0.1
+Version: 1.1.0
 ==========================================================
 */
 
@@ -14,15 +14,26 @@ const STORAGE_KEY = STORAGE.THEME;
 export function initTheme() {
   const savedTheme = localStorage.getItem(STORAGE_KEY);
 
-  if (savedTheme) {
+  if (savedTheme === "dark" || savedTheme === "light") {
+    // User has an explicitly saved preference
     document.documentElement.setAttribute("data-theme", savedTheme);
+  } else {
+    // No saved preference → follow system preference
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+
+    const systemTheme = prefersDark ? "dark" : "light";
+
+    document.documentElement.setAttribute("data-theme", systemTheme);
   }
 
   updateIcon();
 }
 
 export function toggleTheme() {
-  const current = document.documentElement.getAttribute("data-theme");
+  const current =
+    document.documentElement.getAttribute("data-theme") || "light";
 
   const next = current === "dark" ? "light" : "dark";
 

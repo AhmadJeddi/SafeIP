@@ -43,6 +43,7 @@ import {
   onReorderLinks,
   showInputError,
   bindValidationInputEvents,
+  bindQuickLinksAccessControl,
   onThemeToggle,
   onExportSettings,
   onImportSettings,
@@ -395,6 +396,8 @@ function bindEvents() {
   onReorderLinks(handleReorderLinks);
 
   bindValidationInputEvents();
+
+  bindQuickLinksAccessControl();
 
   onThemeToggle(toggleTheme);
 

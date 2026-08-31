@@ -3,7 +3,7 @@
 SafeIP
 ui.js
 UI Layer
-Version: 1.6.0
+Version: 1.6.1
 ==========================================================
 */
 
@@ -1173,6 +1173,23 @@ export function bindValidationInputEvents() {
 }
 
 /**
+ * Prevent Quick Link navigation when links are disabled.
+ */
+export function bindQuickLinksAccessControl() {
+  elements.quickLinksContainer?.addEventListener("click", (event) => {
+    const link = event.target.closest(".quick-link");
+
+    if (!link) {
+      return;
+    }
+
+    if (!quickLinksEnabled) {
+      event.preventDefault();
+    }
+  });
+}
+
+/**
  * Bind theme toggle button event
  *
  * Theme switching logic is handled
@@ -1380,6 +1397,8 @@ export default {
 
   bindValidationInputEvents,
 
+  bindQuickLinksAccessControl,
+
   onExportSettings,
 
   onImportSettings,
@@ -1387,6 +1406,6 @@ export default {
   renderOfflineState,
 
   renderOnlineState,
-  
+
   onNetworkStatusChange,
 };

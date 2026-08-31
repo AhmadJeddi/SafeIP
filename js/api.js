@@ -3,7 +3,7 @@
 SafeIP
 api.js
 Network API Service
-Version: 1.3.0
+Version: 1.4.0
 ==========================================================
 */
 
@@ -92,24 +92,28 @@ function normalizeIPWho(data) {
 }
 
 /* ==========================================================
-   Normalize IPify
+   Normalize HackMyIP
 ========================================================== */
 
-function normalizeIPify(data) {
+function normalizeHackMyIP(data) {
+  if (!data?.success || !data?.data) {
+    throw new Error(data?.message || "HackMyIP failed");
+  }
+
   return {
-    ip: data?.ip || "",
+    ip: data?.data?.ip || "",
 
-    country: "",
+    country: data?.data?.location?.country_name || "",
 
-    countryCode: "",
+    countryCode: data?.data?.location?.country || "",
 
-    region: "",
+    region: data?.data?.location?.region || "",
 
-    city: "",
+    city: data?.data?.location?.city || "",
 
-    timezone: "",
+    timezone: data?.data?.location?.timezone || "",
 
-    isp: "",
+    isp: data?.data?.network?.isp || "",
   };
 }
 
@@ -148,11 +152,11 @@ export async function getNetworkInfo() {
     },
 
     {
-      name: "IPify",
+      name: "HackMyIP",
 
-      url: "https://api.ipify.org?format=json",
+      url: "https://hackmyip.com/api/ip",
 
-      normalize: normalizeIPify,
+      normalize: normalizeHackMyIP,
     },
   ];
 
